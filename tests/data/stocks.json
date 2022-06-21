@@ -1,0 +1,16 @@
+[
+    {
+      "description": "TotalEnergies",
+      "isin_code": "FR0000120271",
+      "quantity": 100,
+      "price": 44.05,
+      "currency": "EUR"
+    },
+    {
+      "description": "iShares Agribusiness UCITS ETF USD (Acc)",
+      "isin_code": "IE00B6R52143",
+      "quantity": 23,
+      "price": 40.3,
+      "currency": "EUR"
+    },
+  ]
