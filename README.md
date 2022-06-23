@@ -20,6 +20,52 @@ If you don't already have an account, here is a referral link to sign up: https:
 5. Try `python -m finary_api me` or `python -m finary_api investments`. 
 6. If you get errors about being unauthorized, you need to signin again.
 
+## Usage
+
+Run ``python -m finary_api` for an up to date version.
+
+```
+Usage:
+    finary_api signin
+    finary_api me
+    finary_api institution_connections
+    finary_api dashboard net [all | 1w | 1m | ytd | 1y]
+    finary_api dashboard gross [all | 1w | 1m | ytd | 1y]
+    finary_api dashboard finary [all | 1w | 1m | ytd | 1y]
+    finary_api portfolio [all | 1w | 1m | ytd | 1y]
+    finary_api commodities [all | 1w | 1m | ytd | 1y]
+    finary_api checking_accounts [all | 1w | 1m | ytd | 1y]
+    finary_api fonds_euro [all | 1w | 1m | ytd | 1y]
+    finary_api other_assets [all | 1w | 1m | ytd | 1y]
+    finary_api saving_accounts [all | 1w | 1m | ytd | 1y]
+    finary_api real_estates [all | 1w | 1m | ytd | 1y]
+    finary_api startups
+    finary_api investments
+    finary_api cryptos
+    finary_api cryptos add <code> <quantity> <price> <account_id>
+    finary_api cryptos update <code> <quantity> <price> <account_id>
+    finary_api cryptos delete <code> <account_id>
+    finary_api precious_metals search QUERY
+    finary_api precious_metals
+    finary_api precious_metals add <name> <quantity> <price>
+    finary_api precious_metals delete <commodity_id>
+    finary_api holdings_accounts [crypto | stocks | <account_name>] 
+    finary_api holdings_accounts add (crypto | stocks) <account_name>
+    finary_api holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
+    finary_api holdings_accounts delete <account_id>
+    finary_api holdings_accounts update <account_id> <account_name> [<account_balance>]
+    finary_api crypto_currency search QUERY
+    finary_api fiat_currency search QUERY
+    finary_api institutions search QUERY
+    finary_api securities search QUERY
+    finary_api securities
+    finary_api securities add <code> <quantity> <price> <account_id>
+    finary_api securities delete <security_id>
+    finary_api import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_api import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_api import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_api import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+```
 
 ## Examples
 
