@@ -24,7 +24,7 @@ Usage:
     finary_api precious_metals
     finary_api precious_metals add <name> <quantity> <price>
     finary_api precious_metals delete <commodity_id>
-    finary_api holdings_accounts [crypto | stocks]
+    finary_api holdings_accounts [crypto | stocks | <account_name>] 
     finary_api holdings_accounts add (crypto | stocks) <account_name>
     finary_api holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
     finary_api holdings_accounts delete <account_id>
@@ -61,6 +61,7 @@ from .holdings_accounts import (
     add_holdings_account,
     get_holdings_account,
     delete_holdings_account,
+    get_holdings_account_per_name_or_id,
     update_holdings_account,
 )
 from .importers.cryptocom import import_cc_csv
@@ -218,10 +219,13 @@ def main() -> int:  # pragma: nocover
         elif args["investments"]:
             get_portfolio_investments(session)
         elif args["holdings_accounts"]:
-            holdings_account_types = ["crypto", "stocks"]
-            hats = [i for i in holdings_account_types if args[i]]
-            holdings_account_type = hats[0] if hats else ""
-            get_holdings_account(session, holdings_account_type)
+            if args["<account_name>"]:
+                get_holdings_account_per_name_or_id(session, args["<account_name>"])
+            else:
+                holdings_account_types = ["crypto", "stocks"]
+                hats = [i for i in holdings_account_types if args[i]]
+                holdings_account_type = hats[0] if hats else ""
+                get_holdings_account(session, holdings_account_type)
         elif args["precious_metals"]:
             get_user_precious_metals(session)
         elif args["securities"]:

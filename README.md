@@ -4,6 +4,8 @@ A simple command line tool to interact with your Finary account.
 Finary is a real time portfolio & stocks tracker. It supports precious metal, cryptos, stocks and a lot more.
 If you don't already have an account, here is a referral link to sign up: https://finary.com/referral/7a49bf74c6d9cb3fca2a
 
+:warning: Use at your own risk. I'm not responsible if you trash your account. :warning:
+
 ## Project goals
 
 * Provide a command line tool to do a large part of what you can do on Finary website
@@ -59,7 +61,8 @@ python -m finary_api dashboard gross all | jq '.result["total"]["amount"]'
 * More typing hints
 * CSV export. Use pandas ?
 * Use logging everywhere. Output only the last result for further processing with jq or others
-* Loans are entirely TODO
+* Loans, Real estates are entirely TODO
+* Timeseries, Insights, and Finary+ features are entirely TODO
 * Precious metal update
 * Interactive command line (it would make automation less fun, but manual use easier)
 

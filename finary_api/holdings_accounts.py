@@ -97,7 +97,11 @@ def get_holdings_account_per_name_or_id(session: requests.Session, name):
 
 
 def add_checking_saving_account(
-    session:requests.Session, account_name:str, institution_name:str, account_type:str, balance:float
+    session: requests.Session,
+    account_name: str,
+    institution_name: str,
+    account_type: str,
+    balance: float,
 ):
     # TODO currency
     institutions = get_institutions(session, institution_name)

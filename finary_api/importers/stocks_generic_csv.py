@@ -36,6 +36,7 @@ def main() -> int:  # pragma: nocover
     args = sys.argv[1:]
     result = import_stocks_generic_csv(args[0])
     import json
+
     print(json.dumps(result, indent=4))
 
 
