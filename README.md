@@ -56,8 +56,8 @@ python -m finary_api dashboard gross all | jq '.result["total"]["amount"]'
 
 
 ## TODO
-* Add better currency support in checking/saving accounts. See TODO there
-* Tests :)
+* Add better currency support in checking/saving accounts. See TODO there.
+* Tests :smile:
 * More typing hints
 * CSV export. Use pandas ?
 * Use logging everywhere. Output only the last result for further processing with jq or others
@@ -67,5 +67,5 @@ python -m finary_api dashboard gross all | jq '.result["total"]["amount"]'
 * Interactive command line (it would make automation less fun, but manual use easier)
 
 ### Remarks for finary devs
-* Delete responses should be normalize, sometimes we get json back sometimes nothing but the 204 HTTP code.
+* Delete responses should be normalized, sometimes we get json back sometimes nothing but the 204 HTTP code.
 
