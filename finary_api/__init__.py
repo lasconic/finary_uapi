@@ -1,5 +1,7 @@
 """
-Finally Finary API.
+Finary API client and command line tool to interact with your
+account.
+
 This module is maintained by lasconic.
 You can always get the latest version of this module at:
     https://github.com/lasconic/finary-api
