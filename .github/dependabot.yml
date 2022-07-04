@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # Python requirements
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: daily
+    assignees:
+      - lasconic
+    labels:
+      - dependencies
+    open-pull-requests-limit: 24
