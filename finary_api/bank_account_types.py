@@ -1,5 +1,4 @@
 import json
-import logging
 import requests
 from .constants import API_ROOT
 

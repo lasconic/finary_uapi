@@ -23,7 +23,7 @@ If you don't already have an account, here is a referral link to sign up: https:
 ## Usage
 
 Run ``python -m finary_api` for an up to date version.
-
+q
 ```
 Usage:
     finary_api signin
@@ -102,7 +102,7 @@ python -m finary_api dashboard gross all | jq '.result["total"]["amount"]'
 
 
 ## TODO
-* Add better currency support in checking/saving accounts. See TODO there.
+* See [Issues](https://github.com/lasconic/finary/issues)
 * Tests :smile:
 * More typing hints
 * CSV export. Use pandas ?

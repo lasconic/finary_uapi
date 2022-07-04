@@ -24,11 +24,16 @@ Usage:
     finary_api precious_metals
     finary_api precious_metals add <name> <quantity> <price>
     finary_api precious_metals delete <commodity_id>
-    finary_api holdings_accounts [crypto | stocks | <account_name>] 
+    finary_api holdings_accounts [crypto | stocks | <account_name>]
     finary_api holdings_accounts add (crypto | stocks) <account_name>
     finary_api holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
     finary_api holdings_accounts delete <account_id>
     finary_api holdings_accounts update <account_id> <account_name> [<account_balance>]
+    finary_api generic_asset_categories
+    finary_api generic_assets
+    finary_api generic_assets add <name> <category> <quantity> <buying_price> <current_price>
+    finary_api generic_assets update <asset_id> <name> <category> <quantity> <buying_price> <current_price>
+    finary_api generic_assets delete <asset_id>
     finary_api crypto_currency search QUERY
     finary_api fiat_currency search QUERY
     finary_api institutions search QUERY
@@ -51,11 +56,16 @@ import sys
 
 from docopt import docopt
 
-from finary_api.importers.stocks_generic_csv import import_stocks_generic_csv
-
 
 from .auth import prepare_session
 from .currencies import get_currencies
+from .generic_asset_categories import get_generic_asset_categories
+from .user_generic_assets import (
+    add_user_generic_asset,
+    delete_user_generic_asset,
+    get_user_generic_assets,
+    update_user_generic_asset,
+)
 from .holdings_accounts import (
     add_checking_saving_account,
     add_holdings_account,
@@ -66,8 +76,9 @@ from .holdings_accounts import (
 )
 from .importers.cryptocom import import_cc_csv
 from .importers.crypto_generic_csv import import_crypto_generic_csv
+from .importers.stocks_generic_csv import import_stocks_generic_csv
 from .institutions import get_institutions
-from .portfolio import get_portfolio_cryptos, get_portfolio_investments
+from .portfolio import get_portfolio_investments
 from .precious_metals import get_precious_metals
 from .securities import get_securities
 from .signin import signin
@@ -107,7 +118,7 @@ def main() -> int:  # pragma: nocover
     """Main entry point."""
 
     args = docopt(__doc__)
-
+    result = ""
     if args["signin"]:
         signin()
     else:
@@ -157,6 +168,15 @@ def main() -> int:  # pragma: nocover
                     args["<price>"],
                     args["<account_id>"],
                 )
+            elif args["generic_assets"]:
+                add_user_generic_asset(
+                    session,
+                    args["<name>"],
+                    args["<category>"],
+                    args["<quantity>"],
+                    args["<buying_price>"],
+                    args["<current_price>"],
+                )
             elif args["precious_metals"]:
                 add_user_precious_metals_by_name(
                     session, args["<name>"], args["<quantity>"], args["<price>"]
@@ -191,6 +211,16 @@ def main() -> int:  # pragma: nocover
                     args["<price>"],
                     args["<account_id>"],
                 )
+            elif args["generic_assets"]:
+                update_user_generic_asset(
+                    session,
+                    args["<asset_id>"],
+                    args["<name>"],
+                    args["<category>"],
+                    args["<quantity>"],
+                    args["<buying_price>"],
+                    args["<current_price>"],
+                )
             elif args["holdings_accounts"]:
                 print(args)
                 update_holdings_account(
@@ -206,6 +236,8 @@ def main() -> int:  # pragma: nocover
                     args["<code>"],
                     args["<account_id>"],
                 )
+            elif args["generic_assets"]:
+                delete_user_generic_asset(session, args["<asset_id>"])
             elif args["holdings_accounts"]:
                 delete_holdings_account(session, args["<account_id>"])
             elif args["precious_metals"]:
@@ -226,6 +258,10 @@ def main() -> int:  # pragma: nocover
                 hats = [i for i in holdings_account_types if args[i]]
                 holdings_account_type = hats[0] if hats else ""
                 get_holdings_account(session, holdings_account_type)
+        elif args["generic_asset_categories"]:
+            result = get_generic_asset_categories(session)
+        elif args["generic_assets"]:
+            get_user_generic_assets(session)
         elif args["precious_metals"]:
             get_user_precious_metals(session)
         elif args["securities"]:
@@ -291,6 +327,8 @@ def main() -> int:  # pragma: nocover
                         add_imported_securities_to_account(
                             session, args["--add"], to_be_imported
                         )
+        if result:
+            print(json.dumps(result, indent=4))
 
     return 0
 
