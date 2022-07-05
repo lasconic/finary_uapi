@@ -1,4 +1,5 @@
 import json
+import logging
 import requests
 from .constants import API_ROOT
 
@@ -7,7 +8,7 @@ portfolio_api = f"{API_ROOT}/users/me/portfolio"
 
 def get_and_print(session: requests.Session, url: str):
     x = session.get(url)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 

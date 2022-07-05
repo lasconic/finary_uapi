@@ -1,3 +1,4 @@
+import logging
 from .constants import API_ROOT
 import requests
 import json
@@ -13,5 +14,5 @@ def get_institutions(session: requests.Session, name: str):
         params["name"] = name
 
     x = session.get(url, params=params)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()

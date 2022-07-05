@@ -1,4 +1,5 @@
 import json
+import logging
 import requests
 from .constants import API_ROOT
 
@@ -12,7 +13,7 @@ def get_bank_account_types(session: requests.Session, type: str):
     if type:
         params["type"] = type
     x = session.get(url, params=params)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 

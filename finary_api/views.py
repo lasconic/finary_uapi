@@ -1,4 +1,5 @@
 import json
+import logging
 import requests
 from .constants import API_ROOT
 
@@ -15,7 +16,7 @@ def get_period_view(session: requests.Session, url: str, period: str):
     if period:
         params["period"] = period
     x = session.get(url, params=params)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -31,7 +32,7 @@ def get_dashboard(session: requests.Session, type: str, period: str):
     if period:
         params["period"] = period
     x = session.get(url, params=params)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 

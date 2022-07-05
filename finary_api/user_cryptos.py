@@ -1,4 +1,5 @@
 import json
+import logging
 import requests
 from .constants import API_ROOT
 from .currencies import get_cryptocurrency_by_code
@@ -7,8 +8,8 @@ from .currencies import get_cryptocurrency_by_code
 def get_user_cryptos(session: requests.Session):
     url = f"{API_ROOT}/users/me/cryptos"
     x = session.get(url)
-    print(x.status_code)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -18,8 +19,8 @@ def delete_user_crypto(session: requests.Session, crypto_id):
     """
     url = f"{API_ROOT}/users/me/cryptos/{crypto_id}"
     x = session.delete(url)
-    # print(x.status_code)
-    # print(json.dumps(x.json(), indent=4))
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -45,8 +46,8 @@ def add_user_crypto(
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
     x = session.post(url, data=data_json, headers=headers)
-    print(x.status_code)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -63,8 +64,8 @@ def update_user_crypto(session: requests.Session, crypto, quantity, buying_price
     headers["Content-Length"] = str(len(crypto_json))
     headers["Content-Type"] = "application/json"
     x = session.put(url, data=crypto_json, headers=headers)
-    print(x.status_code)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -84,8 +85,8 @@ def add_user_crypto_by_code(
             session, correlation_id, quantity, buying_price, holdings_account_id
         )
     else:
-        print(f"Crypto currency [{crypto_code}] not found")
-        return ""
+        logging.info(f"Crypto currency [{crypto_code}] not found")
+        return {}
 
 
 def get_user_crypto_by_code(
@@ -98,7 +99,7 @@ def get_user_crypto_by_code(
             crypto["crypto"]["code"] == crypto_code
             and crypto["account"]["id"] == holdings_account_id
         ):
-            print(crypto)
+            logging.debug(crypto)
             user_crypto = crypto
             break
     return user_crypto
@@ -129,23 +130,3 @@ def delete_user_crypto_by_code(
     crypto = get_user_crypto_by_code(session, crypto_code, holdings_account_id)
     if crypto:
         return delete_user_crypto(session, crypto["id"])
-
-
-def main() -> int:  # pragma: nocover
-    from .auth import prepare_session
-
-    session = prepare_session()
-    # results = get_user_cryptos(session)
-    # results = delete_user_crypto(session, 66424)
-    # results = add_user_crypto(session, "INJ", 1, 20)
-
-    results = add_user_crypto_by_code(session, "INJ", 1, 4, "")
-    # results = add_user_crypto_by_code(session, "ETH", 0.065, 99.63)
-
-    print(json.dumps(results, indent=4))
-
-    return 0
-
-
-if __name__ == "__main__":
-    main()

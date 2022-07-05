@@ -1,4 +1,5 @@
 import json
+import logging
 import requests
 from .constants import API_ROOT
 from .securities import get_securities, guess_security
@@ -8,7 +9,7 @@ from .holdings_accounts import get_holdings_account_per_name_or_id, add_holdings
 def get_user_securities(session: requests.Session):
     url = f"{API_ROOT}/users/me/securities"
     x = session.get(url)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -30,8 +31,8 @@ def add_user_security(
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
     x = session.post(url, data=data_json, headers=headers)
-    print(x.status_code)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -50,8 +51,8 @@ def update_user_security(
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
     x = session.put(url, data=data_json, headers=headers)
-    print(x.status_code)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -61,7 +62,7 @@ def delete_user_security(session: requests.Session, security_id):
     """
     url = f"{API_ROOT}/users/me/securities/{security_id}"
     x = session.delete(url)
-    print(x.status_code)
+    logging.debug(x.status_code)
     return x.status_code
 
 
@@ -82,7 +83,7 @@ def add_user_security_by_symbol(
             buying_price,
         )
     else:
-        print("Symbol not found")
+        logging.warn("Symbol not found")
     return {}
 
 
@@ -97,7 +98,7 @@ def add_user_security_by_symbol_to_account(
             session, symbol, holdings_account_id, quantity, buying_price
         )
     else:
-        print("Account not found")
+        logging.warn("Account not found")
         return {}
 
 
@@ -118,12 +119,12 @@ def add_user_security_to_account(
             buying_price,
         )
     else:
-        print("Account not found")
+        logging.warn("Account not found")
         return {}
 
 
 def add_imported_securities_to_account(
-    session, account_name_id, to_be_imported, edit=False
+    session: requests.Session, account_name_id: str, to_be_imported, edit=False
 ):
     """
     `account_name_id` is a name or an id

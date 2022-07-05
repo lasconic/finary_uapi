@@ -1,4 +1,5 @@
 import json
+import logging
 import requests
 from .constants import API_ROOT
 
@@ -7,7 +8,7 @@ GENERIC_ASSET_ROOT = f"{API_ROOT}/users/me/generic_assets"
 
 def get_user_generic_assets(session: requests.Session):
     x = session.get(GENERIC_ASSET_ROOT)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -29,8 +30,8 @@ def add_user_generic_asset(
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
     x = session.post(url, data=data_json, headers=headers)
-    print(x.status_code)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -56,8 +57,8 @@ def update_user_generic_asset(
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
     x = session.put(url, data=data_json, headers=headers)
-    print(x.status_code)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -67,5 +68,5 @@ def delete_user_generic_asset(session: requests.Session, asset_id):
     """
     url = f"{GENERIC_ASSET_ROOT}/{asset_id}"
     x = session.delete(url)
-    print(x.status_code)
+    logging.debug(x.status_code)
     return x.status_code

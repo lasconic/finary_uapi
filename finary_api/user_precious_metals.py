@@ -1,4 +1,5 @@
 import json
+import logging
 import requests
 from .constants import API_ROOT
 from .precious_metals import get_precious_metals
@@ -7,7 +8,7 @@ from .precious_metals import get_precious_metals
 def get_user_precious_metals(session: requests.Session):
     url = f"{API_ROOT}/users/me/precious_metals"
     x = session.get(url)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -24,7 +25,7 @@ def add_user_precious_metals(
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
     x = session.post(url, data=data_json, headers=headers)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -46,10 +47,10 @@ def delete_user_precious_metals(session: requests.Session, user_precious_metal_i
     """
     url = f"{API_ROOT}/users/me/precious_metals/{user_precious_metal_id}"
     x = session.delete(url)
-    print(x.status_code)
+    logging.debug(x.status_code)
     # TODO no json return yet... maybe one day ?
-    # print(x.text)
-    # print(json.dumps(x.json(), indent=4))
+    # logging.debug(x.text)
+    # logging.debug(json.dumps(x.json(), indent=4))
     return x.status_code
 
 

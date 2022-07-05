@@ -126,42 +126,43 @@ def main() -> int:  # pragma: nocover
         perioda = [i for i in a_period if args[i]]
         period = perioda[0] if perioda else ""
         if args["me"]:
-            get_user_me(session)
+            result = get_user_me(session)
         elif args["institution_connections"]:
-            get_user_me_institution_connections(session)
+            result = get_user_me_institution_connections(session)
         elif args["dashboard"]:
             type = [i for i in a_dashboard_type if args[i]]
-            get_dashboard(session, type[0] if type else "", period)
+            result = get_dashboard(session, type[0] if type else "", period)
         elif args["portfolio"]:
-            get_portfolio(session, period)
+            result = get_portfolio(session, period)
         elif args["checking_accounts"]:
-            get_checking_accounts(session, period)
+            result = get_checking_accounts(session, period)
         elif args["saving_accounts"]:
-            get_savings_accounts(session, period)
+            result = get_savings_accounts(session, period)
         elif args["fonds_euro"]:
-            get_fonds_euro(session, period)
+            result = get_fonds_euro(session, period)
         elif args["real_estates"]:
-            get_real_estates(session, period)
+            result = get_real_estates(session, period)
         elif args["other_assets"]:
-            get_other_assets(session, period)
+            result = get_other_assets(session, period)
         elif args["startups"]:
-            get_startups(session)
+            result = get_startups(session)
         elif args["search"]:
             if args["crypto_currency"]:
-                get_currencies(session, "crypto", args["QUERY"])
+                result = get_currencies(session, "crypto", args["QUERY"])
             elif args["fiat_currency"]:
-                get_currencies(session, "fiat", args["QUERY"])
+                result = get_currencies(session, "fiat", args["QUERY"])
             elif args["institutions"]:
-                get_institutions(session, args["QUERY"])
+                result = get_institutions(session, args["QUERY"])
             elif args["precious_metals"]:
-                get_precious_metals(session, args["QUERY"])
+                result = get_precious_metals(session, args["QUERY"])
             elif args["securities"]:
-                get_securities(session, args["QUERY"])
+                result = get_securities(session, args["QUERY"])
             else:
                 print("Unknown resource for search")
+                return 1
         elif args["add"]:
             if args["cryptos"]:
-                add_user_crypto_by_code(
+                result = add_user_crypto_by_code(
                     session,
                     args["<code>"],
                     args["<quantity>"],
@@ -169,7 +170,7 @@ def main() -> int:  # pragma: nocover
                     args["<account_id>"],
                 )
             elif args["generic_assets"]:
-                add_user_generic_asset(
+                result = add_user_generic_asset(
                     session,
                     args["<name>"],
                     args["<category>"],
@@ -178,16 +179,20 @@ def main() -> int:  # pragma: nocover
                     args["<current_price>"],
                 )
             elif args["precious_metals"]:
-                add_user_precious_metals_by_name(
+                result = add_user_precious_metals_by_name(
                     session, args["<name>"], args["<quantity>"], args["<price>"]
                 )
             elif args["holdings_accounts"]:
                 if args["stocks"]:
-                    add_holdings_account(session, args["<account_name>"], "stocks")
+                    result = add_holdings_account(
+                        session, args["<account_name>"], "stocks"
+                    )
                 elif args["crypto"]:
-                    add_holdings_account(session, args["<account_name>"], "crypto")
+                    result = add_holdings_account(
+                        session, args["<account_name>"], "crypto"
+                    )
                 elif args["checking"] or args["saving"]:
-                    add_checking_saving_account(
+                    result = add_checking_saving_account(
                         session,
                         args["<account_name>"],
                         args["<bank_name>"],
@@ -195,7 +200,7 @@ def main() -> int:  # pragma: nocover
                         args["<balance>"],
                     )
             elif args["securities"]:
-                add_user_security_by_symbol(
+                result = add_user_security_by_symbol(
                     session,
                     args["<code>"],
                     args["<account_id>"],
@@ -204,7 +209,7 @@ def main() -> int:  # pragma: nocover
                 )
         elif args["update"]:
             if args["cryptos"]:
-                update_user_crypto_by_code(
+                result = update_user_crypto_by_code(
                     session,
                     args["<code>"],
                     args["<quantity>"],
@@ -212,7 +217,7 @@ def main() -> int:  # pragma: nocover
                     args["<account_id>"],
                 )
             elif args["generic_assets"]:
-                update_user_generic_asset(
+                result = update_user_generic_asset(
                     session,
                     args["<asset_id>"],
                     args["<name>"],
@@ -222,8 +227,7 @@ def main() -> int:  # pragma: nocover
                     args["<current_price>"],
                 )
             elif args["holdings_accounts"]:
-                print(args)
-                update_holdings_account(
+                result = update_holdings_account(
                     session,
                     args["<account_id>"],
                     args["<account_name>"],
@@ -231,7 +235,7 @@ def main() -> int:  # pragma: nocover
                 )
         elif args["delete"]:
             if args["cryptos"]:
-                delete_user_crypto_by_code(
+                result = delete_user_crypto_by_code(
                     session,
                     args["<code>"],
                     args["<account_id>"],
@@ -239,33 +243,35 @@ def main() -> int:  # pragma: nocover
             elif args["generic_assets"]:
                 delete_user_generic_asset(session, args["<asset_id>"])
             elif args["holdings_accounts"]:
-                delete_holdings_account(session, args["<account_id>"])
+                result = delete_holdings_account(session, args["<account_id>"])
             elif args["precious_metals"]:
                 delete_user_precious_metals(session, args["<commodity_id>"])
             elif args["securities"]:
                 delete_user_security(session, args["<security_id>"])
         elif args["commodities"]:
-            get_commodities(session, period)
+            result = get_commodities(session, period)
         elif args["cryptos"]:
-            get_user_cryptos(session)
+            result = get_user_cryptos(session)
         elif args["investments"]:
-            get_portfolio_investments(session)
+            result = get_portfolio_investments(session)
         elif args["holdings_accounts"]:
             if args["<account_name>"]:
-                get_holdings_account_per_name_or_id(session, args["<account_name>"])
+                result = get_holdings_account_per_name_or_id(
+                    session, args["<account_name>"]
+                )
             else:
                 holdings_account_types = ["crypto", "stocks"]
                 hats = [i for i in holdings_account_types if args[i]]
                 holdings_account_type = hats[0] if hats else ""
-                get_holdings_account(session, holdings_account_type)
+                result = get_holdings_account(session, holdings_account_type)
         elif args["generic_asset_categories"]:
             result = get_generic_asset_categories(session)
         elif args["generic_assets"]:
-            get_user_generic_assets(session)
+            result = get_user_generic_assets(session)
         elif args["precious_metals"]:
-            get_user_precious_metals(session)
+            result = get_user_precious_metals(session)
         elif args["securities"]:
-            get_user_securities(session)
+            result = get_user_securities(session)
         elif args["import"]:
             to_be_imported = {}
             crypto_import = True

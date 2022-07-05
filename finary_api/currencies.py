@@ -1,3 +1,4 @@
+import logging
 from .constants import API_ROOT
 import requests
 import json
@@ -15,7 +16,7 @@ def get_currencies(session: requests.Session, type: str, query: str):
         params["query"] = query
 
     x = session.get(url, params=params)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 

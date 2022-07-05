@@ -3,7 +3,7 @@ import sys
 
 
 # "isin_code", "description","quantity","price","currency"
-def import_stocks_generic_csv(filename):
+def import_stocks_generic_csv(filename: str):
     results = []
     with open(filename, newline="") as csvfile:
         sniffer = csv.Sniffer()
@@ -38,6 +38,7 @@ def main() -> int:  # pragma: nocover
     import json
 
     print(json.dumps(result, indent=4))
+    return 0
 
 
 if __name__ == "__main__":  # pragma: nocover

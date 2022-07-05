@@ -1,8 +1,13 @@
 import logging
 import sys
+from typing import Dict
+
+CryptoLines = Dict[str, Dict[str, float]]
 
 
-def add_quantity(results, currency, amount, price):
+def add_quantity(
+    results: CryptoLines, currency: str, amount: float, price: float
+) -> None:
     if currency not in results:
         results[currency] = {"quantity": amount, "price": price / amount}
     else:
@@ -15,7 +20,7 @@ def add_quantity(results, currency, amount, price):
             )
 
 
-def import_cc_csv(filename, diff_stacked=False):
+def import_cc_csv(filename: str, diff_stacked: bool = False):
     file = open(filename, "r")
     list = file.readlines()
     file.close()
@@ -23,12 +28,12 @@ def import_cc_csv(filename, diff_stacked=False):
     list.pop(0)
     list.reverse()
 
-    results = {}
+    results: CryptoLines = {}
     for line in list:
         fields = line.split(",")
         currency = fields[2]
         amount = float(fields[3])
-        price = 0
+        price = 0.0
 
         type = fields[9]
         if type == "viban_purchase":
@@ -75,7 +80,7 @@ def import_cc_csv(filename, diff_stacked=False):
             results[k]["price"] = results[original_currency]["price"]
             results[original_currency]["quantity"] -= results[k]["quantity"]
 
-    total = 0
+    total = 0.0
     for k in sorted(results.keys()):
         logging.debug(f'    "{k}": "{results[k]}"')
         total += results[k]["quantity"] * results[k]["price"]
@@ -91,6 +96,7 @@ def main() -> int:  # pragma: nocover
     import json
 
     print(json.dumps(result, indent=4))
+    return 0
 
 
 if __name__ == "__main__":  # pragma: nocover

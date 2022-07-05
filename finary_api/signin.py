@@ -1,11 +1,13 @@
 import http.cookiejar
 import json
+import logging
 import os
+from typing import Any
 import requests
 from .constants import API_ROOT, CREDENTIAL_FILE, COOKIE_FILENAME
 
 
-def signin() -> None:
+def signin() -> Any:
     signin_url = f"{API_ROOT}/auth/signin"
 
     # load from environment variables
@@ -34,13 +36,14 @@ def signin() -> None:
 
     session = requests.Session()
     cookie_jar_file = http.cookiejar.MozillaCookieJar(COOKIE_FILENAME)
-    session.cookies = cookie_jar_file
+    session.cookies = cookie_jar_file  # type: ignore
     x = session.post(signin_url, data=credentials_json, headers=headers)
-    print(x.status_code)
+    logging.debug(x.status_code)
     if x.status_code == 201:
         cookie_jar_file.save()
-        print("Sign in OK")
+        logging.info("Sign in OK")
         obj = json.loads(x.content)
-        print(json.dumps(obj, indent=4))
+        logging.debug(json.dumps(obj, indent=4))
+        return x.json()
     else:
-        print(f"error [{x.status_code}]")
+        logging.info(f"error [{x.status_code}]")

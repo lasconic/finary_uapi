@@ -1,3 +1,4 @@
+import logging
 import requests
 import json
 from .constants import API_ROOT
@@ -14,5 +15,5 @@ def get_precious_metals(session: requests.Session, query: str):
         params["query"] = query
 
     x = session.get(url, params=params)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()

@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Any, Dict
 import requests
 
 from .constants import API_ROOT
@@ -14,8 +15,8 @@ def add_holdings_account(
     name: str,
     type: str,
     currency: str = "USD",
-    bank_account_type: dict = {},
-    institution: dict = {},
+    bank_account_type={},
+    institution={},
     balance=None,
 ):
     """
@@ -23,7 +24,7 @@ def add_holdings_account(
     #TODO currency code seems to be an old API, maybe replace by currency_id
     """
     url = holdings_accounts_url
-    data = {}
+    data: Dict[str, Any] = {}
     data["name"] = name
     if type:
         data["manual_type"] = type
@@ -39,7 +40,7 @@ def add_holdings_account(
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
     x = session.post(url, data=data_json, headers=headers)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -52,8 +53,7 @@ def get_holdings_account(session: requests.Session, type: str = ""):
     if type:
         params["manual_type"] = type
     x = session.get(url, params=params)
-    print(x.status_code)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -63,7 +63,7 @@ def delete_holdings_account(session: requests.Session, account_id: str):
     """
     url = f"{holdings_accounts_url}/{account_id}"
     x = session.delete(url)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -83,7 +83,7 @@ def update_holdings_account(
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
     x = session.put(url, data=data_json, headers=headers)
-    print(json.dumps(x.json(), indent=4))
+    logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
@@ -114,7 +114,7 @@ def add_checking_saving_account(
     if not bank_account_type:
         logging.error(f"Can't find bank account type : [{account_type}]")
         return {}
-    add_holdings_account(
+    return add_holdings_account(
         session,
         account_name,
         "",

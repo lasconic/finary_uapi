@@ -23,7 +23,7 @@ If you don't already have an account, here is a referral link to sign up: https:
 ## Usage
 
 Run ``python -m finary_api` for an up to date version.
-q
+
 ```
 Usage:
     finary_api signin
@@ -49,11 +49,16 @@ Usage:
     finary_api precious_metals
     finary_api precious_metals add <name> <quantity> <price>
     finary_api precious_metals delete <commodity_id>
-    finary_api holdings_accounts [crypto | stocks | <account_name>] 
+    finary_api holdings_accounts [crypto | stocks | <account_name>]
     finary_api holdings_accounts add (crypto | stocks) <account_name>
     finary_api holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
     finary_api holdings_accounts delete <account_id>
     finary_api holdings_accounts update <account_id> <account_name> [<account_balance>]
+    finary_api generic_asset_categories
+    finary_api generic_assets
+    finary_api generic_assets add <name> <category> <quantity> <buying_price> <current_price>
+    finary_api generic_assets update <asset_id> <name> <category> <quantity> <buying_price> <current_price>
+    finary_api generic_assets delete <asset_id>
     finary_api crypto_currency search QUERY
     finary_api fiat_currency search QUERY
     finary_api institutions search QUERY
@@ -106,7 +111,6 @@ python -m finary_api dashboard gross all | jq '.result["total"]["amount"]'
 * Tests :smile:
 * More typing hints
 * CSV export. Use pandas ?
-* Use logging everywhere. Output only the last result for further processing with jq or others
 * Loans, Real estates are entirely TODO
 * Timeseries, Insights, and Finary+ features are entirely TODO
 * Precious metal update
