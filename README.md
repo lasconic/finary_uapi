@@ -111,8 +111,7 @@ python -m finary_api dashboard gross all | jq '.result["total"]["amount"]'
 * Tests :smile:
 * More typing hints
 * CSV export. Use pandas ?
-* Loans, Real estates are entirely TODO
-* Timeseries, Insights, and Finary+ features are entirely TODO
+* Write, update, delete for Loans, Real estates are entirely TODO
 * Precious metal update
 * Interactive command line (it would make automation less fun, but manual use easier)
 

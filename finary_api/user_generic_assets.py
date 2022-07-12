@@ -1,15 +1,15 @@
 import json
 import logging
 import requests
+
+from .utils import get_and_print
 from .constants import API_ROOT
 
 GENERIC_ASSET_ROOT = f"{API_ROOT}/users/me/generic_assets"
 
 
 def get_user_generic_assets(session: requests.Session):
-    x = session.get(GENERIC_ASSET_ROOT)
-    logging.debug(json.dumps(x.json(), indent=4))
-    return x.json()
+    return get_and_print(session, GENERIC_ASSET_ROOT)
 
 
 def add_user_generic_asset(

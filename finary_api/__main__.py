@@ -42,6 +42,11 @@ Usage:
     finary_api securities
     finary_api securities add <code> <quantity> <price> <account_id>
     finary_api securities delete <security_id>
+    finary_api insights
+    finary_api fees
+    finary_api loans
+    finary_api real_estates
+    finary_api scpis
     finary_api import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_api import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_api import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
@@ -81,9 +86,11 @@ from .importers.stocks_generic_csv import import_stocks_generic_csv
 from .institutions import get_institutions
 from .portfolio import get_portfolio_cryptos_distribution, get_portfolio_investments
 from .precious_metals import get_precious_metals
+from .user_real_estates import get_user_real_estates
+from .user_scpis import get_user_scpis
 from .securities import get_securities
 from .signin import signin
-from .user_startups import get_startups
+from .user_startups import get_user_startups
 from .user_cryptos import (
     add_user_crypto_by_code,
     delete_user_crypto_by_code,
@@ -102,7 +109,7 @@ from .user_securities import (
     get_user_securities,
     delete_user_security,
 )
-from .views import a_period, a_dashboard_type
+from .views import a_period, a_dashboard_type, get_fees, get_insights, get_loans
 from .views import (
     get_checking_accounts,
     get_commodities,
@@ -146,7 +153,7 @@ def main() -> int:  # pragma: nocover
         elif args["other_assets"]:
             result = get_other_assets(session, period)
         elif args["startups"]:
-            result = get_startups(session)
+            result = get_user_startups(session)
         elif args["search"]:
             if args["crypto_currency"]:
                 result = get_currencies(session, "crypto", args["QUERY"])
@@ -276,6 +283,16 @@ def main() -> int:  # pragma: nocover
             result = get_user_precious_metals(session)
         elif args["securities"]:
             result = get_user_securities(session)
+        elif args["fees"]:
+            result = get_fees(session)
+        elif args["insights"]:
+            result = get_insights(session)
+        elif args["loans"]:
+            result = get_loans(session)
+        elif args["real_estates"]:
+            result = get_user_real_estates(session)
+        elif args["scpis"]:
+            result = get_user_scpis(session)
         elif args["import"]:
             to_be_imported = {}
             crypto_import = True
