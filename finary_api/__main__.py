@@ -35,6 +35,7 @@ Usage:
     finary_api generic_assets add <name> <category> <quantity> <buying_price> <current_price>
     finary_api generic_assets update <asset_id> <name> <category> <quantity> <buying_price> <current_price>
     finary_api generic_assets delete <asset_id>
+    finary_api crypto_chains
     finary_api crypto_currency search QUERY
     finary_api fiat_currency search QUERY
     finary_api institutions search QUERY
@@ -46,6 +47,7 @@ Usage:
     finary_api fees
     finary_api loans
     finary_api real_estates
+    finary_api scpis search QUERY
     finary_api scpis
     finary_api import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_api import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
@@ -64,14 +66,9 @@ from docopt import docopt
 
 
 from .auth import prepare_session
+from .crypto_chains import get_crypto_chains
 from .currencies import get_currencies
 from .generic_asset_categories import get_generic_asset_categories
-from .user_generic_assets import (
-    add_user_generic_asset,
-    delete_user_generic_asset,
-    get_user_generic_assets,
-    update_user_generic_asset,
-)
 from .holdings_accounts import (
     add_checking_saving_account,
     add_holdings_account,
@@ -86,8 +83,15 @@ from .importers.stocks_generic_csv import import_stocks_generic_csv
 from .institutions import get_institutions
 from .portfolio import get_portfolio_cryptos_distribution, get_portfolio_investments
 from .precious_metals import get_precious_metals
+from .user_generic_assets import (
+    add_user_generic_asset,
+    delete_user_generic_asset,
+    get_user_generic_assets,
+    update_user_generic_asset,
+)
 from .user_real_estates import get_user_real_estates
 from .user_scpis import get_user_scpis
+from .scpis import get_scpis
 from .securities import get_securities
 from .signin import signin
 from .user_startups import get_user_startups
@@ -163,6 +167,8 @@ def main() -> int:  # pragma: nocover
                 result = get_institutions(session, args["QUERY"])
             elif args["precious_metals"]:
                 result = get_precious_metals(session, args["QUERY"])
+            elif args["scpis"]:
+                result = get_scpis(session, args["QUERY"])
             elif args["securities"]:
                 result = get_securities(session, args["QUERY"])
             else:
@@ -258,6 +264,8 @@ def main() -> int:  # pragma: nocover
                 delete_user_security(session, args["<security_id>"])
         elif args["commodities"]:
             result = get_commodities(session, period)
+        elif args["crypto_chains"]:
+            result = get_crypto_chains(session)
         elif args["cryptos"]:
             if args["distribution"]:
                 result = get_portfolio_cryptos_distribution(session)
