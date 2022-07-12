@@ -17,6 +17,7 @@ Usage:
     finary_api startups
     finary_api investments
     finary_api cryptos
+    finary_api cryptos distribution
     finary_api cryptos add <code> <quantity> <price> <account_id>
     finary_api cryptos update <code> <quantity> <price> <account_id>
     finary_api cryptos delete <code> <account_id>
@@ -78,7 +79,7 @@ from .importers.cryptocom import import_cc_csv
 from .importers.crypto_generic_csv import import_crypto_generic_csv
 from .importers.stocks_generic_csv import import_stocks_generic_csv
 from .institutions import get_institutions
-from .portfolio import get_portfolio_investments
+from .portfolio import get_portfolio_cryptos_distribution, get_portfolio_investments
 from .precious_metals import get_precious_metals
 from .securities import get_securities
 from .signin import signin
@@ -120,7 +121,7 @@ def main() -> int:  # pragma: nocover
     args = docopt(__doc__)
     result = ""
     if args["signin"]:
-        signin()
+        result = signin()
     else:
         session = prepare_session()
         perioda = [i for i in a_period if args[i]]
@@ -251,7 +252,10 @@ def main() -> int:  # pragma: nocover
         elif args["commodities"]:
             result = get_commodities(session, period)
         elif args["cryptos"]:
-            result = get_user_cryptos(session)
+            if args["distribution"]:
+                result = get_portfolio_cryptos_distribution(session)
+            else:
+                result = get_user_cryptos(session)
         elif args["investments"]:
             result = get_portfolio_investments(session)
         elif args["holdings_accounts"]:
@@ -333,8 +337,8 @@ def main() -> int:  # pragma: nocover
                         add_imported_securities_to_account(
                             session, args["--add"], to_be_imported
                         )
-        if result:
-            print(json.dumps(result, indent=4))
+    if result:
+        print(json.dumps(result, indent=4))
 
     return 0
 

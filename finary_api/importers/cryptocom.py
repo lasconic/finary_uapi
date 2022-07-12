@@ -67,7 +67,7 @@ def import_cc_csv(filename: str, diff_stacked: bool = False):
         add_quantity(results, currency, amount, price)
 
     # delete very small values
-    delete = [key for key in results if abs(results[key]["quantity"]) < 1e-15]
+    delete = [key for key in results if abs(results[key]["quantity"]) < 1e-12]
     for key in delete:
         del results[key]
 
@@ -92,7 +92,7 @@ def main() -> int:  # pragma: nocover
     """Main entry point."""
     logging.basicConfig(level=logging.INFO)
     args = sys.argv[1:]
-    result = import_cc_csv(args[0], False)
+    result = import_cc_csv(args[0], len(args) > 1)
     import json
 
     print(json.dumps(result, indent=4))
