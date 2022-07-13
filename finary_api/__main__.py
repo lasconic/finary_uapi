@@ -1,7 +1,7 @@
 """
 Finary command line
 Usage:
-    finary_api signin
+    finary_api signin [MFA_CODE]
     finary_api me
     finary_api institution_connections
     finary_api dashboard net [all | 1w | 1m | ytd | 1y]
@@ -69,7 +69,7 @@ from .auth import prepare_session
 from .crypto_chains import get_crypto_chains
 from .currencies import get_currencies
 from .generic_asset_categories import get_generic_asset_categories
-from .holdings_accounts import (
+from .user_holdings_accounts import (
     add_checking_saving_account,
     add_holdings_account,
     get_holdings_account,
@@ -81,7 +81,10 @@ from .importers.cryptocom import import_cc_csv
 from .importers.crypto_generic_csv import import_crypto_generic_csv
 from .importers.stocks_generic_csv import import_stocks_generic_csv
 from .institutions import get_institutions
-from .portfolio import get_portfolio_cryptos_distribution, get_portfolio_investments
+from .user_portfolio import (
+    get_portfolio_cryptos_distribution,
+    get_portfolio_investments,
+)
 from .precious_metals import get_precious_metals
 from .user_generic_assets import (
     add_user_generic_asset,
@@ -132,7 +135,7 @@ def main() -> int:  # pragma: nocover
     args = docopt(__doc__)
     result = ""
     if args["signin"]:
-        result = signin()
+        result = signin(args["MFA_CODE"])
     else:
         session = prepare_session()
         perioda = [i for i in a_period if args[i]]

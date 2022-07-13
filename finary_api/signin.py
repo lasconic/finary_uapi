@@ -7,7 +7,7 @@ import requests
 from .constants import API_ROOT, CREDENTIAL_FILE, COOKIE_FILENAME
 
 
-def signin() -> Any:
+def signin(otp_code: str = "") -> Any:
     signin_url = f"{API_ROOT}/auth/signin"
 
     # load from environment variables
@@ -31,7 +31,7 @@ def signin() -> Any:
 
     headers = {
         "Content-Length": f"{len(credentials_json)}",
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=utf-8",
     }
 
     session = requests.Session()
@@ -44,6 +44,25 @@ def signin() -> Any:
         logging.info("Sign in OK")
         obj = json.loads(x.content)
         logging.debug(json.dumps(obj, indent=4))
-        return x.json()
+    elif x.status_code == 202:  # 2fa
+        result = x.json()
+        otp_relay_token = result["result"]["otp_relay_token"]
+        if not otp_code:
+            otp_code = input("Enter 2FA code:")
+        data = {}
+        data["device_id"] = credentials["device_id"]
+        data["otp_code"] = otp_code
+        data["otp_relay_token"] = otp_relay_token
+        data_json = json.dumps(data)
+        headers["Content-Length"] = f"{len(data_json)}"
+        x = session.post(signin_url, data=data_json, headers=headers)
+        if x.status_code == 201:
+            cookie_jar_file.save()
+            logging.info("Sign in OK")
+            obj = json.loads(x.content)
+            logging.debug(json.dumps(obj, indent=4))
+        else:
+            logging.info(f"Error 2fa [{x.status_code}]")
     else:
-        logging.info(f"error [{x.status_code}]")
+        logging.info(f"Error [{x.status_code}]")
+    return x.json()

@@ -3,7 +3,10 @@ import logging
 import requests
 from .constants import API_ROOT
 from .securities import get_securities, guess_security
-from .holdings_accounts import get_holdings_account_per_name_or_id, add_holdings_account
+from .user_holdings_accounts import (
+    get_holdings_account_per_name_or_id,
+    add_holdings_account,
+)
 
 
 def get_user_securities(session: requests.Session):
