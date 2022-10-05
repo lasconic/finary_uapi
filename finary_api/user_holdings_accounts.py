@@ -44,7 +44,7 @@ def add_holdings_account(
     return x.json()
 
 
-def get_holdings_account(session: requests.Session, type: str = ""):
+def get_holdings_accounts(session: requests.Session, type: str = ""):
     """
     type can be "crypto" or "stocks", or empty for all accounts
     """
@@ -89,7 +89,7 @@ def update_holdings_account(
 
 # convenience functions
 def get_holdings_account_per_name_or_id(session: requests.Session, name):
-    accounts = get_holdings_account(session)
+    accounts = get_holdings_accounts(session)
     for a in accounts["result"]:
         if a["name"] == name or a["id"] == name:
             return a

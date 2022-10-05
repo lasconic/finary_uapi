@@ -33,7 +33,7 @@ def add_user_crypto(
 ):
     """
     correlation_id is a correlation id as send back by the currencies API (currencies.py)
-    holdings_account_id is the id of the account they crypto will be added too
+    holdings_account_id is the id of the account the crypto will be added too
     """
     url = f"{API_ROOT}/users/me/cryptos"
     data = {}

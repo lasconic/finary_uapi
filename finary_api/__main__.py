@@ -10,7 +10,8 @@ Usage:
     finary_api portfolio [all | 1w | 1m | ytd | 1y]
     finary_api commodities [all | 1w | 1m | ytd | 1y]
     finary_api checking_accounts [all | 1w | 1m | ytd | 1y]
-    finary_api fonds_euro [all | 1w | 1m | ytd | 1y]
+    finary_api fonds_euro_view [all | 1w | 1m | ytd | 1y]
+    finary_api fonds_euro
     finary_api other_assets [all | 1w | 1m | ytd | 1y]
     finary_api saving_accounts [all | 1w | 1m | ytd | 1y]
     finary_api real_estates [all | 1w | 1m | ytd | 1y]
@@ -64,7 +65,6 @@ import sys
 
 from docopt import docopt
 
-
 from .auth import prepare_session
 from .crypto_chains import get_crypto_chains
 from .currencies import get_currencies
@@ -72,7 +72,7 @@ from .generic_asset_categories import get_generic_asset_categories
 from .user_holdings_accounts import (
     add_checking_saving_account,
     add_holdings_account,
-    get_holdings_account,
+    get_holdings_accounts,
     delete_holdings_account,
     get_holdings_account_per_name_or_id,
     update_holdings_account,
@@ -104,6 +104,7 @@ from .user_cryptos import (
     get_user_cryptos,
     update_user_crypto_by_code,
 )
+from .user_fonds_euro import get_user_fonds_euro
 from .user_me import get_user_me, get_user_me_institution_connections
 from .user_precious_metals import (
     add_user_precious_metals_by_name,
@@ -153,8 +154,10 @@ def main() -> int:  # pragma: nocover
             result = get_checking_accounts(session, period)
         elif args["saving_accounts"]:
             result = get_savings_accounts(session, period)
-        elif args["fonds_euro"]:
+        elif args["fonds_euro_view"]:
             result = get_fonds_euro(session, period)
+        elif args["fonds_euro"]:
+            result = get_user_fonds_euro(session)
         elif args["real_estates"]:
             result = get_real_estates(session, period)
         elif args["other_assets"]:
@@ -285,7 +288,7 @@ def main() -> int:  # pragma: nocover
                 holdings_account_types = ["crypto", "stocks"]
                 hats = [i for i in holdings_account_types if args[i]]
                 holdings_account_type = hats[0] if hats else ""
-                result = get_holdings_account(session, holdings_account_type)
+                result = get_holdings_accounts(session, holdings_account_type)
         elif args["generic_asset_categories"]:
             result = get_generic_asset_categories(session)
         elif args["generic_assets"]:
