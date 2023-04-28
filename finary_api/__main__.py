@@ -47,6 +47,7 @@ Usage:
     finary_api insights
     finary_api fees
     finary_api loans
+    finary_api credit_accounts
     finary_api real_estates
     finary_api scpis search QUERY
     finary_api scpis
@@ -127,6 +128,7 @@ from .views import (
     get_portfolio,
     get_real_estates,
     get_savings_accounts,
+    get_credit_accounts,
 )
 
 
@@ -303,6 +305,8 @@ def main() -> int:  # pragma: nocover
             result = get_insights(session)
         elif args["loans"]:
             result = get_loans(session)
+        elif args["credit_accounts"]:
+            result = get_credit_accounts(session)
         elif args["real_estates"]:
             result = get_user_real_estates(session)
         elif args["scpis"]:

@@ -106,3 +106,8 @@ def get_fees(session: requests.Session):
 def get_loans(session: requests.Session):
     url = f"{views_url}/loans"
     return get_and_print(session, url)
+
+
+def get_credit_accounts(session: requests.Session):
+    url = f"{views_url}/credit_accounts"
+    return get_and_print(session, url)
