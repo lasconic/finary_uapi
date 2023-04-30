@@ -51,6 +51,7 @@ Usage:
     finary_api real_estates
     finary_api scpis search QUERY
     finary_api scpis
+    finary_api watches search QUERY
     finary_api import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_api import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_api import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
@@ -65,6 +66,8 @@ import json
 import sys
 
 from docopt import docopt
+
+from finary_api.watches import get_watches
 
 from .auth import prepare_session
 from .crypto_chains import get_crypto_chains
@@ -179,6 +182,8 @@ def main() -> int:  # pragma: nocover
                 result = get_scpis(session, args["QUERY"])
             elif args["securities"]:
                 result = get_securities(session, args["QUERY"])
+            elif args["watches"]:
+                result = get_watches(session, args["QUERY"])
             else:
                 print("Unknown resource for search")
                 return 1
