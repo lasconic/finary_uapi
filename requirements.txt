@@ -1,4 +1,4 @@
 docopt==0.6.2
 fuzzywuzzy[speedup]>=0.18.0
-requests==2.29.0
+requests==2.30.0
 
