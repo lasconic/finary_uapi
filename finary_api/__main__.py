@@ -17,6 +17,8 @@ Usage:
     finary_api real_estates [all | 1w | 1m | ytd | 1y]
     finary_api startups
     finary_api investments
+    finary_api crowdlendings
+    finary_api crowdlendings distribution
     finary_api cryptos
     finary_api cryptos distribution
     finary_api cryptos add <code> <quantity> <price> <account_id>
@@ -88,6 +90,8 @@ from .institutions import get_institutions
 from .user_portfolio import (
     get_portfolio_cryptos_distribution,
     get_portfolio_investments,
+    get_portfolio_crowdlendings,
+    get_portfolio_crowdlendings_distribution,
 )
 from .precious_metals import get_precious_metals
 from .user_generic_assets import (
@@ -137,6 +141,8 @@ from .views import (
 
 def main() -> int:  # pragma: nocover
     """Main entry point."""
+    # import logging
+    # logging.basicConfig(level=logging.INFO)
 
     args = docopt(__doc__)
     result = ""
@@ -277,6 +283,11 @@ def main() -> int:  # pragma: nocover
                 delete_user_security(session, args["<security_id>"])
         elif args["commodities"]:
             result = get_commodities(session, period)
+        elif args["crowdlendings"]:
+            if args["distribution"]:
+                result = get_portfolio_crowdlendings_distribution(session)
+            else:
+                result = get_portfolio_crowdlendings(session)
         elif args["crypto_chains"]:
             result = get_crypto_chains(session)
         elif args["cryptos"]:
