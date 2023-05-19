@@ -56,8 +56,8 @@ Usage:
     finary_api watches search QUERY
     finary_api import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_api import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
-    finary_api import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
-    finary_api import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_api import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
+    finary_api import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
 
 Options:
   --new=NAME          Create a new account and import the lines
@@ -378,15 +378,19 @@ def main() -> int:  # pragma: nocover
                 else:  # stocks import
                     if args["--new"]:
                         add_imported_securities_to_account(
-                            session, args["--new"], to_be_imported
+                            session, args["--new"], to_be_imported, dry_run=args["-d"]
                         )
                     elif args["--edit"]:
                         add_imported_securities_to_account(
-                            session, args["--edit"], to_be_imported, edit=True
+                            session,
+                            args["--edit"],
+                            to_be_imported,
+                            edit=True,
+                            dry_run=args["-d"],
                         )
                     elif args["--add"]:
                         add_imported_securities_to_account(
-                            session, args["--add"], to_be_imported
+                            session, args["--add"], to_be_imported, dry_run=args["-d"]
                         )
     if result:
         print(json.dumps(result, indent=4))

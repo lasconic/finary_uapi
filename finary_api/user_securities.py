@@ -127,7 +127,12 @@ def add_user_security_to_account(
 
 
 def add_imported_securities_to_account(
-    session: requests.Session, account_name_id: str, to_be_imported, edit=False
+    session: requests.Session,
+    account_name_id: str,
+    to_be_imported,
+    edit=False,
+    delete=False,
+    dry_run=False,
 ):
     """
     `account_name_id` is a name or an id
@@ -136,28 +141,79 @@ def add_imported_securities_to_account(
     Then add the securities, and so add to them if they exist
     If `edit` is True, it will edit the security instead of adding to it,
     it will create the security line if not found. It doesn't delete securities!
+        * If `dry_run` is True, it will do nothing but log what it would do
     """
     account = get_holdings_account_per_name_or_id(session, account_name_id)
     if not account:
         account = add_holdings_account(session, account_name_id, "stocks")
         account = account["result"]
+
+    if edit:
+        for account_security in account["securities"]:
+            found = False
+            for line in to_be_imported:
+                if account_security["security"]["isin"] == line["isin_code"]:
+                    found = True
+                    break
+            if not found:
+                if dry_run:
+                    logging.info(f'-- Delete {account_security["security"]["name"]}')
+
     for line in to_be_imported:
-        security = guess_security(session, line)
+        # search by ISIN in the account
+        security = {}
+        for account_security in account["securities"]:
+            if account_security["security"]["isin"] == line["isin_code"]:
+                security = account_security["security"]
+                break
+        # if not found, try to guess
+        if not security:
+            security = guess_security(session, line)
         if security:
             if edit:
                 found = False
                 for account_security in account["securities"]:
-                    if security["symbol"] == account_security["security"]["symbol"]:
-                        update_user_security(
+                    if (
+                        security["correlation_id"]
+                        == account_security["security"]["correlation_id"]
+                    ):
+                        if (
+                            line["quantity"] != account_security["quantity"]
+                            or line["price"] != account_security["display_buying_price"]
+                        ):
+                            if dry_run:
+                                logging.info(
+                                    f'** Update [{security["name"]}]: {account_security["quantity"]} -> {line["quantity"]} - [{account_security["display_buying_price"]} -> {line["price"]}]'  # noqa
+                                )
+                            else:
+                                update_user_security(
+                                    session,
+                                    account_security,
+                                    line["quantity"],
+                                    line["price"],
+                                    account["id"],
+                                )
+                        found = True
+                        break
+                if not found:
+                    if dry_run:
+                        logging.info(
+                            f'++ Add [{security["symbol"]}]: {line["quantity"]} - {line["price"]}'  # noqa
+                        )
+                    else:
+                        add_user_security(
                             session,
-                            account_security,
+                            account["id"],
+                            security["correlation_id"],
                             line["quantity"],
                             line["price"],
-                            account["id"],
                         )
-                    found = True
-                    continue
-                if not found:
+            else:
+                if dry_run:
+                    logging.info(
+                        f'+ Add [{security["symbol"]}]: {line["quantity"]} - {line["price"]}'
+                    )
+                else:
                     add_user_security(
                         session,
                         account["id"],
@@ -165,11 +221,3 @@ def add_imported_securities_to_account(
                         line["quantity"],
                         line["price"],
                     )
-            else:
-                add_user_security(
-                    session,
-                    account["id"],
-                    security["correlation_id"],
-                    line["quantity"],
-                    line["price"],
-                )
