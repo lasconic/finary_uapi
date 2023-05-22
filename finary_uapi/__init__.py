@@ -4,10 +4,10 @@ account.
 
 This module is maintained by lasconic.
 You can always get the latest version of this module at:
-    https://github.com/lasconic/finary-api
+    https://github.com/lasconic/finary-uapi
 """
 
-__version__ = "1.0.0"
+__version__ = "0.1.1"
 __author__ = "lasconic"
 __copyright__ = """
 Copyright (c) 2021-2022, lasconic

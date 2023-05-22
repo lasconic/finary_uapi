@@ -1,63 +1,63 @@
 """
 Finary command line
 Usage:
-    finary_api signin [MFA_CODE]
-    finary_api me
-    finary_api institution_connections
-    finary_api dashboard net [all | 1w | 1m | ytd | 1y]
-    finary_api dashboard gross [all | 1w | 1m | ytd | 1y]
-    finary_api dashboard finary [all | 1w | 1m | ytd | 1y]
-    finary_api portfolio [all | 1w | 1m | ytd | 1y]
-    finary_api commodities [all | 1w | 1m | ytd | 1y]
-    finary_api checking_accounts [all | 1w | 1m | ytd | 1y]
-    finary_api fonds_euro_view [all | 1w | 1m | ytd | 1y]
-    finary_api fonds_euro
-    finary_api other_assets [all | 1w | 1m | ytd | 1y]
-    finary_api saving_accounts [all | 1w | 1m | ytd | 1y]
-    finary_api real_estates [all | 1w | 1m | ytd | 1y]
-    finary_api startups
-    finary_api investments
-    finary_api crowdlendings
-    finary_api crowdlendings distribution
-    finary_api cryptos
-    finary_api cryptos distribution
-    finary_api cryptos add <code> <quantity> <price> <account_id>
-    finary_api cryptos update <code> <quantity> <price> <account_id>
-    finary_api cryptos delete <code> <account_id>
-    finary_api precious_metals search QUERY
-    finary_api precious_metals
-    finary_api precious_metals add <name> <quantity> <price>
-    finary_api precious_metals delete <commodity_id>
-    finary_api holdings_accounts [crypto | stocks | <account_name>]
-    finary_api holdings_accounts add (crypto | stocks) <account_name>
-    finary_api holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
-    finary_api holdings_accounts delete <account_id>
-    finary_api holdings_accounts update <account_id> <account_name> [<account_balance>]
-    finary_api generic_asset_categories
-    finary_api generic_assets
-    finary_api generic_assets add <name> <category> <quantity> <buying_price> <current_price>
-    finary_api generic_assets update <asset_id> <name> <category> <quantity> <buying_price> <current_price>
-    finary_api generic_assets delete <asset_id>
-    finary_api crypto_chains
-    finary_api crypto_currency search QUERY
-    finary_api fiat_currency search QUERY
-    finary_api institutions search QUERY
-    finary_api securities search QUERY
-    finary_api securities
-    finary_api securities add <code> <quantity> <price> <account_id>
-    finary_api securities delete <security_id>
-    finary_api insights
-    finary_api fees
-    finary_api loans
-    finary_api credit_accounts
-    finary_api real_estates
-    finary_api scpis search QUERY
-    finary_api scpis
-    finary_api watches search QUERY
-    finary_api import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
-    finary_api import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
-    finary_api import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
-    finary_api import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
+    finary_uapi signin [MFA_CODE]
+    finary_uapi me
+    finary_uapi institution_connections
+    finary_uapi dashboard net [all | 1w | 1m | ytd | 1y]
+    finary_uapi dashboard gross [all | 1w | 1m | ytd | 1y]
+    finary_uapi dashboard finary [all | 1w | 1m | ytd | 1y]
+    finary_uapi portfolio [all | 1w | 1m | ytd | 1y]
+    finary_uapi commodities [all | 1w | 1m | ytd | 1y]
+    finary_uapi checking_accounts [all | 1w | 1m | ytd | 1y]
+    finary_uapi fonds_euro_view [all | 1w | 1m | ytd | 1y]
+    finary_uapi fonds_euro
+    finary_uapi other_assets [all | 1w | 1m | ytd | 1y]
+    finary_uapi saving_accounts [all | 1w | 1m | ytd | 1y]
+    finary_uapi real_estates [all | 1w | 1m | ytd | 1y]
+    finary_uapi startups
+    finary_uapi investments
+    finary_uapi crowdlendings
+    finary_uapi crowdlendings distribution
+    finary_uapi cryptos
+    finary_uapi cryptos distribution
+    finary_uapi cryptos add <code> <quantity> <price> <account_id>
+    finary_uapi cryptos update <code> <quantity> <price> <account_id>
+    finary_uapi cryptos delete <code> <account_id>
+    finary_uapi precious_metals search QUERY
+    finary_uapi precious_metals
+    finary_uapi precious_metals add <name> <quantity> <price>
+    finary_uapi precious_metals delete <commodity_id>
+    finary_uapi holdings_accounts [crypto | stocks | <account_name>]
+    finary_uapi holdings_accounts add (crypto | stocks) <account_name>
+    finary_uapi holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
+    finary_uapi holdings_accounts delete <account_id>
+    finary_uapi holdings_accounts update <account_id> <account_name> [<account_balance>]
+    finary_uapi generic_asset_categories
+    finary_uapi generic_assets
+    finary_uapi generic_assets add <name> <category> <quantity> <buying_price> <current_price>
+    finary_uapi generic_assets update <asset_id> <name> <category> <quantity> <buying_price> <current_price>
+    finary_uapi generic_assets delete <asset_id>
+    finary_uapi crypto_chains
+    finary_uapi crypto_currency search QUERY
+    finary_uapi fiat_currency search QUERY
+    finary_uapi institutions search QUERY
+    finary_uapi securities search QUERY
+    finary_uapi securities
+    finary_uapi securities add <code> <quantity> <price> <account_id>
+    finary_uapi securities delete <security_id>
+    finary_uapi insights
+    finary_uapi fees
+    finary_uapi loans
+    finary_uapi credit_accounts
+    finary_uapi real_estates
+    finary_uapi scpis search QUERY
+    finary_uapi scpis
+    finary_uapi watches search QUERY
+    finary_uapi import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
+    finary_uapi import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
 
 Options:
   --new=NAME          Create a new account and import the lines
@@ -68,8 +68,6 @@ import json
 import sys
 
 from docopt import docopt
-
-from finary_api.watches import get_watches
 
 from .auth import prepare_session
 from .crypto_chains import get_crypto_chains
@@ -137,6 +135,7 @@ from .views import (
     get_savings_accounts,
     get_credit_accounts,
 )
+from .watches import get_watches
 
 
 def main() -> int:  # pragma: nocover
