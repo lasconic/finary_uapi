@@ -19,6 +19,15 @@
         "ideas",
         "doc"
       ]
+    },
+    {
+      "login": "Varal7",
+      "name": "Victor Quach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8019486?v=4",
+      "profile": "http://varal7.fr",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 6,
