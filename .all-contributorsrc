@@ -1,0 +1,30 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "lasconic",
+      "name": "Nicolas Froment",
+      "avatar_url": "https://avatars.githubusercontent.com/u/234271?v=4",
+      "profile": "http://lasconic.com",
+      "contributions": [
+        "projectManagement",
+        "promotion",
+        "code",
+        "bug",
+        "ideas",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "finary_uapi",
+  "projectOwner": "lasconic"
+}
