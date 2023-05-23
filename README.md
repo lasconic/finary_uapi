@@ -1,6 +1,6 @@
 Finary Unofficial API wrapper
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A simple command line tool to interact with your Finary account.
@@ -138,7 +138,8 @@ Thanks go to these people ([emoji key](https://allcontributors.org/docs/en/emoji
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="http://lasconic.com"><img src="https://avatars.githubusercontent.com/u/234271?v=4?s=100" width="100px;" alt="Nicolas Froment"/><br /><sub><b>Nicolas Froment</b></sub></a><br /><a href="#projectManagement-lasconic" title="Project Management">📆</a> <a href="#promotion-lasconic" title="Promotion">📣</a> <a href="https://github.com/lasconic/finary_uapi/commits?author=lasconic" title="Code">💻</a> <a href="https://github.com/lasconic/finary_uapi/issues?q=author%3Alasconic" title="Bug reports">🐛</a> <a href="#ideas-lasconic" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/lasconic/finary_uapi/commits?author=lasconic" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://lasconic.com"><img src="https://avatars.githubusercontent.com/u/234271?v=4?s=100" width="100px;" alt="Nicolas Froment"/><br /><sub><b>Nicolas Froment</b></sub></a><br /><a href="#projectManagement-lasconic" title="Project Management">📆</a> <a href="#promotion-lasconic" title="Promotion">📣</a> <a href="https://github.com/lasconic/finary_uapi/commits?author=lasconic" title="Code">💻</a> <a href="https://github.com/lasconic/finary_uapi/issues?q=author%3Alasconic" title="Bug reports">🐛</a> <a href="#ideas-lasconic" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/lasconic/finary_uapi/commits?author=lasconic" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://varal7.fr"><img src="https://avatars.githubusercontent.com/u/8019486?v=4?s=100" width="100px;" alt="Victor Quach"/><br /><sub><b>Victor Quach</b></sub></a><br /><a href="https://github.com/lasconic/finary_uapi/commits?author=Varal7" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
