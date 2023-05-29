@@ -20,6 +20,7 @@ def get_currencies(session: requests.Session, type: str, query: str):
     return x.json()
 
 
+# utils functions
 def get_cryptocurrency_by_code(session: requests.Session, code: str):
     currencies = get_currencies(session, "crypto", code)
     if len(currencies["result"]) > 0:
