@@ -1,7 +1,4 @@
 Finary Unofficial API wrapper
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A simple command line tool to interact with your Finary account.
 
@@ -17,7 +14,7 @@ If you don't already have an account, here is a referral link to sign up: https:
 
 ## Quick start 
 
-1. Install requirements. `pip install -r requirements.txt`.
+1. Install requirements. `pip install finary_uapi`.
 2. Copy paste the `credentials.json.tpl` file to `credentials.json` and file your username and password.
 3. Run `python -m finary_uapi signin`
 4. You are good to go and can explore the API. Run `python -m finary_uapi` for available commands.
@@ -127,7 +124,7 @@ python -m finary_uapi dashboard gross all | jq '.result["total"]["amount"]'
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
