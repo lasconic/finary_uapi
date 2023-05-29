@@ -25,13 +25,13 @@ jobs:
         run: poetry --version
 
       - name: Install dependencies and launch shell
-        run: python -m poetry install && poetry shell
+        run: python -m poetry install
 
       - name: Style
-        run: python -m black --check --diff finary_uapi tests
+        run: poetry run python -m black --check --diff finary_uapi tests
 
       - name: Lint
-        run: python -m flake8 finary_uapi tests
+        run: poetry run python -m flake8 finary_uapi tests
 
       - name: Types
-        run: python -m mypy finary_uapi tests
+        run: poetry run python -m mypy finary_uapi tests
