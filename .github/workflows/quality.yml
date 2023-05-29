@@ -24,8 +24,8 @@ jobs:
       - name: View poetry version
         run: poetry --version
 
-      - name: Install dependencies and pre-commit
-        run: python -m poetry install
+      - name: Install dependencies and launch shell
+        run: python -m poetry install && poetry shell
 
       - name: Style
         run: python -m black --check --diff finary_uapi tests
