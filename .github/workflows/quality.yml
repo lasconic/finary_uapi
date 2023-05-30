@@ -1,0 +1,37 @@
+name: Code quality
+
+on: pull_request
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.11
+
+      - name: Install Python Poetry
+        uses: abatilo/actions-poetry@v2.1.0
+        with:
+          poetry-version: 1.4.2
+
+      - name: Configure poetry
+        shell: bash
+        run: python -m poetry config virtualenvs.in-project true
+
+      - name: View poetry version
+        run: poetry --version
+
+      - name: Install dependencies
+        run: python -m poetry install
+
+      - name: Style
+        run: poetry run python -m black --check --diff finary_uapi tests
+
+      - name: Lint
+        run: poetry run python -m flake8 finary_uapi tests
+
+      - name: Types
+        run: poetry run python -m mypy finary_uapi tests
