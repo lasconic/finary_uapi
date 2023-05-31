@@ -3,6 +3,7 @@ import requests
 from importlib import import_module
 from finary_uapi.signin import signin
 from finary_uapi.auth import prepare_session
+from finary_uapi.securities import get_securities
 
 
 def test_signin() -> None:
@@ -40,6 +41,7 @@ def session() -> requests.Session:
         ),  # TODO change name and add _user_
         ("user_me", "", {}),
         ("user_me", "get_user_me_institution_connections", {}),
+        ("user_me", "get_user_me_subscription_details", {}),
         ("user_portfolio", "get_portfolio_crowdlendings", {}),
         ("user_portfolio", "get_portfolio_crowdlendings_distribution", {}),
         ("user_portfolio", "get_portfolio_cryptos", {}),
@@ -78,3 +80,9 @@ def test_generic_test(
     assert result["message"] == "OK"
     assert result["error"] is None
     assert len(result["result"]) > 0
+
+
+def test_get_security_error(session: requests.Session) -> None:
+    securities = get_securities(session, "US5949181045")
+    assert securities
+    assert securities["result"] == []
