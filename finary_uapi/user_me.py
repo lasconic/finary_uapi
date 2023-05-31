@@ -13,3 +13,8 @@ def get_user_me(session: requests.Session) -> Any:
 def get_user_me_institution_connections(session: requests.Session) -> Any:
     url = f"{API_ROOT}/users/me/institution_connections/details"
     return get_and_print(session, url)
+
+
+def get_user_me_subscription_details(session: requests.Session) -> Any:
+    url = f"{API_ROOT}/users/me/subscription_details"
+    return get_and_print(session, url)
