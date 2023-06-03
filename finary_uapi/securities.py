@@ -16,7 +16,9 @@ def get_securities(session: requests.Session, query):
         logging.debug(json.dumps(x.json(), indent=4))
         result = x.json()
     else:
-        logging.warn(f"Error searching for [{query}]. Status code = [{x.status_code}]")
+        logging.warning(
+            f"Error searching for [{query}]. Status code = [{x.status_code}]"
+        )
         result = {"result": []}
     return result
 

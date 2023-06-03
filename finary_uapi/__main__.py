@@ -58,6 +58,8 @@ Usage:
     finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
     finary_uapi import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
+    finary_uapi sharing SHARING_CODE_OR_URL [--secret=SECRET_CODE]
+
 
 Options:
   --new=NAME          Create a new account and import the lines
@@ -102,6 +104,7 @@ from .user_real_estates import get_user_real_estates
 from .user_scpis import get_user_scpis
 from .scpis import get_scpis
 from .securities import get_securities
+from .sharing import get_sharing
 from .signin import signin
 from .user_startups import get_user_startups
 from .user_cryptos import (
@@ -391,6 +394,8 @@ def main() -> int:  # pragma: nocover
                         add_imported_securities_to_account(
                             session, args["--add"], to_be_imported, dry_run=args["-d"]
                         )
+        elif args["sharing"]:
+            result = get_sharing(args["SHARING_CODE_OR_URL"], args["--secret"] or "")
     if result:
         print(json.dumps(result, indent=4))
 
