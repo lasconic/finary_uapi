@@ -48,6 +48,7 @@ def session() -> requests.Session:
         ("user_portfolio", "get_portfolio_cryptos", {}),
         ("user_portfolio", "get_portfolio_cryptos_distribution", {}),
         ("user_portfolio", "get_portfolio_investments", {}),
+        ("user_portfolio", "get_portfolio_investments_dividends", {}),
         ("user_precious_metals", "", {}),
         ("user_real_estates", "", {}),
         ("user_scpis", "", {}),
