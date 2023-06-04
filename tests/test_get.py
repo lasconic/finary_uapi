@@ -41,6 +41,7 @@ def session() -> requests.Session:
         ),  # TODO change name and add _user_
         ("user_me", "", {}),
         ("user_me", "get_user_me_institution_connections", {}),
+        ("user_me", "get_user_me_sharing_links", {}),
         ("user_me", "get_user_me_subscription_details", {}),
         ("user_portfolio", "get_portfolio_crowdlendings", {}),
         ("user_portfolio", "get_portfolio_crowdlendings_distribution", {}),
