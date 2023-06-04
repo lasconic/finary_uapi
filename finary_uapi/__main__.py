@@ -17,6 +17,7 @@ Usage:
     finary_uapi real_estates [all | 1w | 1m | ytd | 1y]
     finary_uapi startups
     finary_uapi investments
+    finary_uapi investments dividends
     finary_uapi crowdlendings
     finary_uapi crowdlendings distribution
     finary_uapi cryptos
@@ -88,10 +89,11 @@ from .importers.crypto_generic_csv import import_crypto_generic_csv
 from .importers.stocks_generic_csv import import_stocks_generic_csv
 from .institutions import get_institutions
 from .user_portfolio import (
-    get_portfolio_cryptos_distribution,
     get_portfolio_investments,
+    get_portfolio_investments_dividends,
     get_portfolio_crowdlendings,
     get_portfolio_crowdlendings_distribution,
+    get_portfolio_cryptos_distribution,
 )
 from .precious_metals import get_precious_metals
 from .user_generic_assets import (
@@ -298,7 +300,10 @@ def main() -> int:  # pragma: nocover
             else:
                 result = get_user_cryptos(session)
         elif args["investments"]:
-            result = get_portfolio_investments(session)
+            if args["dividends"]:
+                result = get_portfolio_investments_dividends(session)
+            else:
+                result = get_portfolio_investments(session)
         elif args["holdings_accounts"]:
             if args["<account_name>"]:
                 result = get_holdings_account_per_name_or_id(

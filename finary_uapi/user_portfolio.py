@@ -66,3 +66,9 @@ def get_portfolio_distribution(
     x = session.get(url, params=params)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
+
+
+def get_portfolio_investments_dividends(session: requests.Session):
+    portfolio_type = "investments"
+    url = f"{portfolio_api}/{portfolio_type}/dividends"
+    return get_and_print(session, url)
