@@ -48,6 +48,7 @@ def import_cc_csv(filename: str, diff_stacked: bool = False):
             "supercharger_withdrawal",
             "crypto_earn_program_created",
             "crypto_earn_program_withdrawn",
+            "finance.dpos.staking.crypto_wallet"
         ]:
             if not diff_stacked:
                 continue

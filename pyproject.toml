@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "finary-uapi"
-version = "0.1.3"
+version = "0.1.4"
 description = "Finary API client and command line tool to interact with your Finary account."
 authors = ["lasconic <lasconic@gmail.com>"]
 license = "MIT License"
@@ -14,16 +14,16 @@ fuzzywuzzy = {version = "^0.18.0", extras = ["speedup"]}
 requests = "^2.30.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "23.3.0"
-flake8 = "6.0.0"
-mypy = "1.3.0"
+black = "23.7.0"
+flake8 = "6.1.0"
+mypy = "1.5.1"
 pdoc3 = "0.10.0"
 pydocstyle = "6.3.0"
 pytest = "7.4.0"
 pytest-cov = "4.1.0"
 pytest-dependency = "0.5.1"
-responses = "0.23.1"
-types-requests = "2.31.0.1"
+responses = "0.23.3"
+types-requests = "2.31.0.2"
 
 [build-system]
 requires = ["poetry-core"]
