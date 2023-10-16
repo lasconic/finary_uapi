@@ -1,6 +1,6 @@
 import requests
 from .constants import API_ROOT
-from .utils import get_and_print, get_real_estate_placeid
+from .utils import get_and_print, get_real_estates_placeid
 import json
 import logging
 
@@ -8,10 +8,9 @@ def get_user_real_estates(session: requests.Session):
     url = f"{API_ROOT}/users/me/real_estates"
     return get_and_print(session, url)
 
-#Todo - WIP - add_user_real_estates - handle less args if not rent
 def add_user_real_estates(
     session: requests.Session, 
-    #use to get the place ID from address or can be more precise with gps coordinate by using format <address>&circle:<radius-in-meter>@<lat>,<lng>
+    #use to get the place ID from address
     address, 
     #category: rent, live_primary, live_secondary, other
     category, 
@@ -27,15 +26,15 @@ def add_user_real_estates(
     #ownership percentage 0.00 format
     ownership_percentage,
     #monthy charges (total) in Euro (mandatory if rent category)
-    monthly_charges, 
+    monthly_charges=0, 
     #monthly rent (total) in Euro (mandatory if rent category)
-    monthly_rent, 
+    monthly_rent=0, 
     #yearly taxes in Euro (mandatory if rent category)
-    yearly_taxes, 
+    yearly_taxes=0, 
     #rental period: annual or seasonal (mandatory if rent category)
-    rental_period, 
+    rental_period="annual", 
     #rental type: nue, lmnp or sci (mandatory if rent category)
-    rental_type
+    rental_type="nue"
 ):
     url = f"{API_ROOT}/users/me/real_estates"
     data = {}
@@ -75,7 +74,7 @@ def add_user_real_estates(
     data["buying_price"] = int(buying_price)
     data["building_type"] = building_type
     data["ownership_percentage"] = float(ownership_percentage)
-    data["place_id"] = get_real_estate_placeid(address)
+    data["place_id"] = get_real_estates_placeid(session, address)
     if (category == "rent"):
         data["monthly_charges"] = int(monthly_charges)
         data["monthly_rent"] = float(monthly_rent)
@@ -92,7 +91,6 @@ def add_user_real_estates(
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
-#Todo - WIP - update_user_real_estates - handle more args if rent
 def update_user_real_estates(
     session: requests.Session,
     #'asset_id' is the id of the asset for this user, as provided by GET

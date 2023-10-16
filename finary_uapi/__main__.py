@@ -150,7 +150,6 @@ from .views import (
 )
 from .watches import get_watches
 
-
 def main() -> int:  # pragma: nocover
     """Main entry point."""
     import logging
