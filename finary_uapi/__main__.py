@@ -52,6 +52,9 @@ Usage:
     finary_uapi loans
     finary_uapi credit_accounts
     finary_uapi real_estates
+    finary_uapi real_estates add <address> <category> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> [ requiered if category is rent : <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> ]
+    finary_uapi real_estates update <asset_id> <category> <user_estimated_value> <description> <buying_price> <ownership_percentage> [ requiered if category is rent : <monthly_rent>]
+    finary_uapi real_estates delete <asset_id>
     finary_uapi scpis search QUERY
     finary_uapi scpis
     finary_uapi watches search QUERY
@@ -102,7 +105,12 @@ from .user_generic_assets import (
     get_user_generic_assets,
     update_user_generic_asset,
 )
-from .user_real_estates import get_user_real_estates
+from .user_real_estates import (
+    get_user_real_estates,
+    add_user_real_estates,
+    update_user_real_estates,
+    delete_user_real_estates,
+)
 from .user_scpis import get_user_scpis
 from .scpis import get_scpis
 from .securities import get_securities
@@ -174,8 +182,8 @@ def main() -> int:  # pragma: nocover
             result = get_fonds_euro(session, period)
         elif args["fonds_euro"]:
             result = get_user_fonds_euro(session)
-        elif args["real_estates"]:
-            result = get_real_estates(session, period)
+        #elif args["real_estates"]:
+        #    result = get_real_estates(session, period)
         elif args["other_assets"]:
             result = get_other_assets(session, period)
         elif args["startups"]:
@@ -216,6 +224,36 @@ def main() -> int:  # pragma: nocover
                     args["<buying_price>"],
                     args["<current_price>"],
                 )
+            elif args["real_estates"]:
+                if args["<category>"] == "rent":
+                    result = add_user_real_estates(
+                        session,
+                        args["<address>"],  
+                        args["<category>"],
+                        args["<user_estimated_value>"],
+                        args["<description>"],
+                        args["<surface>"],
+                        args["<buying_price>"], 
+                        args["<building_type>"],
+                        args["<ownership_percentage>"],
+                        args["<monthly_charges>"], 
+                        args["<monthly_rent>"], 
+                        args["<yearly_taxes>"],
+                        args["<rental_period>"], 
+                        args["<rental_type>"], 
+                    )
+                else:
+                    result = add_user_real_estates(
+                        session,
+                        args["<address>"],  
+                        args["<category>"],
+                        args["<user_estimated_value>"],
+                        args["<description>"],
+                        args["<surface>"],
+                        args["<buying_price>"], 
+                        args["<building_type>"],
+                        args["<ownership_percentage>"],
+                    )
             elif args["precious_metals"]:
                 result = add_user_precious_metals_by_name(
                     session, args["<name>"], args["<quantity>"], args["<price>"]
@@ -264,6 +302,29 @@ def main() -> int:  # pragma: nocover
                     args["<buying_price>"],
                     args["<current_price>"],
                 )
+            elif args["real_estates"]:
+                if args["<category>"] == "rent":
+                    result = update_user_real_estates(
+                    session,
+                    args["<asset_id>"],
+                    args["<category>"],  
+                    args["<user_estimated_value>"],
+                    args["<description>"],
+                    args["<buying_price>"],
+                    args["<ownership_percentage>"],
+                    args["<monthly_rent>"],
+                )    
+                else:
+                    result = update_user_real_estates(
+                        session,
+                        args["<asset_id>"],
+                        args["<category>"],
+                        args["<user_estimated_value>"],
+                        args["<description>"],
+                        args["<buying_price>"], 
+                        args["<user_estimated_value>"],
+                        args["<ownership_percentage>"],
+                    )
             elif args["holdings_accounts"]:
                 result = update_holdings_account(
                     session,
@@ -280,6 +341,8 @@ def main() -> int:  # pragma: nocover
                 )
             elif args["generic_assets"]:
                 delete_user_generic_asset(session, args["<asset_id>"])
+            elif args["real_estates"]:
+                delete_user_real_estates(session, args["<asset_id>"])
             elif args["holdings_accounts"]:
                 result = delete_holdings_account(session, args["<account_id>"])
             elif args["precious_metals"]:
