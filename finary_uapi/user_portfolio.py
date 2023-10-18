@@ -1,6 +1,7 @@
 import json
 import logging
 import requests
+from typing import Dict, Union
 
 from .constants import API_ROOT
 from .utils import get_and_print
@@ -75,12 +76,20 @@ def get_portfolio_investments_dividends(session: requests.Session):
 
 
 def get_portfolio_checking_transactions(
-    session: requests.Session, page: int = 1, per_page: int = 50
+    session: requests.Session,
+    page: int = 1,
+    per_page: int = 50,
+    query: str = "",
+    institution_id: str = "",
 ):
     portfolio_type = "checking_accounts"
     url = f"{portfolio_api}/{portfolio_type}/transactions"
-    params = {}
+    params: Dict[str, Union[str, int]] = {}
     params["page"] = page
     params["per_page"] = per_page
+    if query:
+        params["query"] = query
+    if institution_id:
+        params["institution_id"] = institution_id
     x = session.get(url, params=params)
     return x.json()
