@@ -19,6 +19,7 @@ Usage:
     finary_uapi startups
     finary_uapi investments
     finary_uapi investments dividends
+    finary_uapi investments transactions
     finary_uapi crowdlendings
     finary_uapi crowdlendings distribution
     finary_uapi cryptos
@@ -93,6 +94,7 @@ from .user_portfolio import (
     get_portfolio_investments,
     get_portfolio_investments_dividends,
     get_portfolio_checking_transactions,
+    get_portfolio_investments_transactions,
     get_portfolio_crowdlendings,
     get_portfolio_crowdlendings_distribution,
     get_portfolio_cryptos_distribution,
@@ -169,7 +171,7 @@ def main() -> int:  # pragma: nocover
         elif args["portfolio"]:
             result = get_portfolio(session, period)
         elif args["checking_accounts"]:
-            if args["checking_accounts"]:
+            if args["transactions"]:
                 result = get_portfolio_checking_transactions(session)
             else:
                 result = get_checking_accounts(session, period)
@@ -308,6 +310,8 @@ def main() -> int:  # pragma: nocover
         elif args["investments"]:
             if args["dividends"]:
                 result = get_portfolio_investments_dividends(session)
+            elif args["transactions"]:
+                result = get_portfolio_investments_transactions(session)
             else:
                 result = get_portfolio_investments(session)
         elif args["holdings_accounts"]:
