@@ -75,21 +75,52 @@ def get_portfolio_investments_dividends(session: requests.Session):
     return get_and_print(session, url)
 
 
-def get_portfolio_checking_transactions(
+def get_portfolio_transactions(
     session: requests.Session,
+    portfolio_type: str = "checking_accounts",
     page: int = 1,
     per_page: int = 50,
     query: str = "",
+    account_id: str = "",
     institution_id: str = "",
 ):
-    portfolio_type = "checking_accounts"
     url = f"{portfolio_api}/{portfolio_type}/transactions"
     params: Dict[str, Union[str, int]] = {}
     params["page"] = page
     params["per_page"] = per_page
     if query:
         params["query"] = query
+    if account_id:
+        params["account_id"] = account_id
     if institution_id:
         params["institution_id"] = institution_id
     x = session.get(url, params=params)
     return x.json()
+
+
+def get_portfolio_checking_transactions(
+    session: requests.Session,
+    page: int = 1,
+    per_page: int = 50,
+    query: str = "",
+    account_id: str = "",
+    institution_id: str = "",
+):
+    portfolio_type = "checking_accounts"
+    return get_portfolio_transactions(
+        session, portfolio_type, page, per_page, query, account_id, institution_id
+    )
+
+
+def get_portfolio_investments_transactions(
+    session: requests.Session,
+    page: int = 1,
+    per_page: int = 50,
+    query: str = "",
+    account_id: str = "",
+    institution_id: str = "",
+):
+    portfolio_type = "investments"
+    return get_portfolio_transactions(
+        session, portfolio_type, page, per_page, query, account_id, institution_id
+    )
