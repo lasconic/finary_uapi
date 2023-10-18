@@ -72,3 +72,15 @@ def get_portfolio_investments_dividends(session: requests.Session):
     portfolio_type = "investments"
     url = f"{portfolio_api}/{portfolio_type}/dividends"
     return get_and_print(session, url)
+
+
+def get_portfolio_checking_transactions(
+    session: requests.Session, page: int = 1, per_page: int = 50
+):
+    portfolio_type = "checking_accounts"
+    url = f"{portfolio_api}/{portfolio_type}/transactions"
+    params = {}
+    params["page"] = page
+    params["per_page"] = per_page
+    x = session.get(url, params=params)
+    return x.json()
