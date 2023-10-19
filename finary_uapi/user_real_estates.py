@@ -12,10 +12,10 @@ def get_user_real_estates(session: requests.Session):
 
 def add_user_real_estates(
     session: requests.Session, 
-    #use to get the place ID from address
-    address, 
     #category: rent, live_primary, live_secondary, other
-    category, 
+    category,
+    #use to get the place ID from address
+    address,  
     #user estimated price in Euro
     user_estimated_value,
     description,
@@ -96,10 +96,10 @@ def add_user_real_estates(
 
 def update_user_real_estates(
     session: requests.Session,
-    #'asset_id' is the id of the asset for this user, as provided by GET
-    asset_id,
     #category: rent, live_primary, live_secondary, other
     category, 
+    #'asset_id' is the id of the asset for this user, as provided by GET
+    asset_id,
     #user estimated price in Euro
     user_estimated_value,
     description,
