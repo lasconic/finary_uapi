@@ -52,8 +52,8 @@ Usage:
     finary_uapi loans
     finary_uapi credit_accounts
     finary_uapi real_estates
-    finary_uapi real_estates add <address> <category> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> [ requiered if category is rent : <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> ]
-    finary_uapi real_estates update <asset_id> <category> <user_estimated_value> <description> <buying_price> <ownership_percentage> [ requiered if category is rent : <monthly_rent>]
+    finary_uapi real_estates add <address> <category> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> [ required if category is rent : <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> ]
+    finary_uapi real_estates update <asset_id> <category> <user_estimated_value> <description> <buying_price> <ownership_percentage> [ required if category is rent : <monthly_rent>]
     finary_uapi real_estates delete <asset_id>
     finary_uapi scpis search QUERY
     finary_uapi scpis

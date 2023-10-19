@@ -1,11 +1,13 @@
 import requests
 from .constants import API_ROOT
-from .utils import get_and_print, get_real_estates_placeid
+from .utils import get_and_print
+from .real_estates import get_real_estates_placeid
 import json
 import logging
 
 def get_user_real_estates(session: requests.Session):
     url = f"{API_ROOT}/users/me/real_estates"
+
     return get_and_print(session, url)
 
 def add_user_real_estates(
@@ -89,6 +91,7 @@ def add_user_real_estates(
     x = session.post(url, data=data_json, headers=headers)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
+
     return x.json()
 
 def update_user_real_estates(
@@ -135,6 +138,7 @@ def update_user_real_estates(
     x = session.put(url, data=data_json, headers=headers)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
+
     return x.json()
 
 
@@ -145,4 +149,5 @@ def delete_user_real_estates(session: requests.Session, asset_id):
     url = f"{API_ROOT}/users/me/real_estates/{asset_id}"
     x = session.delete(url)
     logging.debug(x.status_code)
+
     return x.status_code
