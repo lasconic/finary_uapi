@@ -10,6 +10,7 @@ Usage:
     finary_uapi portfolio [all | 1w | 1m | ytd | 1y]
     finary_uapi commodities [all | 1w | 1m | ytd | 1y]
     finary_uapi checking_accounts [all | 1w | 1m | ytd | 1y]
+    finary_uapi checking_accounts transactions
     finary_uapi fonds_euro_view [all | 1w | 1m | ytd | 1y]
     finary_uapi fonds_euro
     finary_uapi other_assets [all | 1w | 1m | ytd | 1y]
@@ -18,6 +19,7 @@ Usage:
     finary_uapi startups
     finary_uapi investments
     finary_uapi investments dividends
+    finary_uapi investments transactions
     finary_uapi crowdlendings
     finary_uapi crowdlendings distribution
     finary_uapi cryptos
@@ -94,6 +96,8 @@ from .institutions import get_institutions
 from .user_portfolio import (
     get_portfolio_investments,
     get_portfolio_investments_dividends,
+    get_portfolio_checking_transactions,
+    get_portfolio_investments_transactions,
     get_portfolio_crowdlendings,
     get_portfolio_crowdlendings_distribution,
     get_portfolio_cryptos_distribution,
@@ -174,7 +178,10 @@ def main() -> int:  # pragma: nocover
         elif args["portfolio"]:
             result = get_portfolio(session, period)
         elif args["checking_accounts"]:
-            result = get_checking_accounts(session, period)
+            if args["transactions"]:
+                result = get_portfolio_checking_transactions(session)
+            else:
+                result = get_checking_accounts(session, period)
         elif args["saving_accounts"]:
             result = get_savings_accounts(session, period)
         elif args["fonds_euro_view"]:
@@ -365,6 +372,8 @@ def main() -> int:  # pragma: nocover
         elif args["investments"]:
             if args["dividends"]:
                 result = get_portfolio_investments_dividends(session)
+            elif args["transactions"]:
+                result = get_portfolio_investments_transactions(session)
             else:
                 result = get_portfolio_investments(session)
         elif args["holdings_accounts"]:
