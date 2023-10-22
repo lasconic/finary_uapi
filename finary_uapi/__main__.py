@@ -296,28 +296,16 @@ def main() -> int:  # pragma: nocover
                     args["<current_price>"],
                 )
             elif args["real_estates"]:
-                if args["rent"]:
-                    result = update_user_real_estates(
-                        session,
-                        "rent",
-                        args["<asset_id>"],
-                        args["<user_estimated_value>"],
-                        args["<description>"],
-                        args["<buying_price>"],
-                        args["<ownership_percentage>"],
-                        args["<monthly_rent>"],
-                    )
-                else:
-                    result = update_user_real_estates(
-                        session,
-                        args["<category>"],
-                        args["<asset_id>"],
-                        args["<user_estimated_value>"],
-                        args["<description>"],
-                        args["<buying_price>"],
-                        args["<user_estimated_value>"],
-                        args["<ownership_percentage>"],
-                    )
+                result = update_user_real_estates(
+                    session,
+                    "rent" if args["<rent>"] else args["<category>"],
+                    args["<asset_id>"],
+                    args["<user_estimated_value>"],
+                    args["<description>"],
+                    args["<buying_price>"],
+                    args["<ownership_percentage>"],
+                    args["<monthly_rent>"],
+                )
             elif args["holdings_accounts"]:
                 result = update_holdings_account(
                     session,
