@@ -28,6 +28,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nmathey",
+      "name": "NickFR",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20896232?v=4",
+      "profile": "https://github.com/nmathey",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 6,
@@ -35,5 +44,6 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "projectName": "finary_uapi",
-  "projectOwner": "lasconic"
+  "projectOwner": "lasconic",
+  "commitType": "docs"
 }
