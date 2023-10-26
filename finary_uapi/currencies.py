@@ -30,7 +30,7 @@ def get_currency_by_code(session: requests.Session, type: str, code: str):
             if currency["code"] == code:
                 return currency
         return currency
-    return currency
+    return {}
 
 # utils functions
 def get_cryptocurrency_by_code(session: requests.Session, code: str):
@@ -51,3 +51,5 @@ def get_fiatcurrency_by_code(session: requests.Session, code: str):
             if currency["code"] == code:
                 return currency
         return currency
+    return {}
+    
