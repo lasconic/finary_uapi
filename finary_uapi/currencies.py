@@ -19,6 +19,18 @@ def get_currencies(session: requests.Session, type: str, query: str):
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
+def get_currency_by_code(session: requests.Session, type: str, code: str):
+     """
+    type = 'crypto' or 'fiat'
+    """
+    currencies = get_currencies(session, type, code)
+     if len(currencies["result"]) > 0:
+        currency = currencies["result"][0]
+        for currency in currencies["result"]:
+            if currency["code"] == code:
+                return currency
+        return currency
+    return currency
 
 # utils functions
 def get_cryptocurrency_by_code(session: requests.Session, code: str):
