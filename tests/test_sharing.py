@@ -30,7 +30,7 @@ def test_get_sharing_not_valid() -> None:
 
 
 def test_get_sharing_forbidden() -> None:
-    result = get_sharing("https://app.finary.com/share/4b17e7c91983edff79e5")
+    result = get_sharing("https://app.finary.com/v2/share/2245fc1afbec337108d0")
     assert result["message"] == "Forbidden"
     assert result["error"]
     assert result["error"]["code"] == "REQUEST_FORBIDDEN"
@@ -38,7 +38,9 @@ def test_get_sharing_forbidden() -> None:
 
 
 def test_get_sharing_secret() -> None:
-    result = get_sharing("https://app.finary.com/share/4b17e7c91983edff79e5", "679080")
+    result = get_sharing(
+        "https://app.finary.com/v2/share/2245fc1afbec337108d0", "3rIo8g"
+    )
     assert result["message"] == "OK"
     assert result["error"] is None
     assert len(result["result"]) > 0
