@@ -155,7 +155,6 @@ from .views import (
 )
 from .watches import get_watches
 
-
 def main() -> int:  # pragma: nocover
     """Main entry point."""
     import logging
@@ -190,6 +189,11 @@ def main() -> int:  # pragma: nocover
             result = get_fonds_euro(session, period)
         elif args["fonds_euro"]:
             result = get_user_fonds_euro(session)
+<<<<<<< HEAD
+        #elif args["real_estates"]:
+        #    result = get_real_estates(session, period)
+=======
+>>>>>>> 3ee0bc30054f24e341e29efcc25587621380d660
         elif args["other_assets"]:
             result = get_other_assets(session, period)
         elif args["startups"]:
@@ -231,6 +235,36 @@ def main() -> int:  # pragma: nocover
                     args["<current_price>"],
                 )
             elif args["real_estates"]:
+<<<<<<< HEAD
+                if args["rent"]:
+                    result = add_user_real_estates(
+                        session,"rent",
+                        args["<address>"],  
+                        args["<user_estimated_value>"],
+                        args["<description>"],
+                        args["<surface>"],
+                        args["<buying_price>"], 
+                        args["<building_type>"],
+                        args["<ownership_percentage>"],
+                        args["<monthly_charges>"], 
+                        args["<monthly_rent>"], 
+                        args["<yearly_taxes>"],
+                        args["<rental_period>"], 
+                        args["<rental_type>"], 
+                    )
+                else:
+                    result = add_user_real_estates(
+                        session,
+                        args["<category>"],
+                        args["<address>"],  
+                        args["<user_estimated_value>"],
+                        args["<description>"],
+                        args["<surface>"],
+                        args["<buying_price>"], 
+                        args["<building_type>"],
+                        args["<ownership_percentage>"],
+                    )
+=======
                 result = add_user_real_estates(
                     session,
                     "rent" if args["<rent>"] else args["<category>"],
@@ -247,6 +281,7 @@ def main() -> int:  # pragma: nocover
                     args["<rental_period>"],
                     args["<rental_type>"],
                 )
+>>>>>>> 3ee0bc30054f24e341e29efcc25587621380d660
             elif args["precious_metals"]:
                 result = add_user_precious_metals_by_name(
                     session, args["<name>"], args["<quantity>"], args["<price>"]
@@ -296,16 +331,38 @@ def main() -> int:  # pragma: nocover
                     args["<current_price>"],
                 )
             elif args["real_estates"]:
+<<<<<<< HEAD
+                if args["rent"]:
+                    result = update_user_real_estates(
+                    session,"rent",
+                    args["<asset_id>"],  
+=======
                 result = update_user_real_estates(
                     session,
                     "rent" if args["<rent>"] else args["<category>"],
                     args["<asset_id>"],
+>>>>>>> 3ee0bc30054f24e341e29efcc25587621380d660
                     args["<user_estimated_value>"],
                     args["<description>"],
                     args["<buying_price>"],
                     args["<ownership_percentage>"],
                     args["<monthly_rent>"],
+<<<<<<< HEAD
+                    )    
+                else:
+                    result = update_user_real_estates(
+                        session,
+                        args["<category>"],
+                        args["<asset_id>"],
+                        args["<user_estimated_value>"],
+                        args["<description>"],
+                        args["<buying_price>"], 
+                        args["<user_estimated_value>"],
+                        args["<ownership_percentage>"],
+                    )
+=======
                 )
+>>>>>>> 3ee0bc30054f24e341e29efcc25587621380d660
             elif args["holdings_accounts"]:
                 result = update_holdings_account(
                     session,
