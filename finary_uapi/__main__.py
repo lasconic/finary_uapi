@@ -4,6 +4,7 @@ Usage:
     finary_uapi signin [MFA_CODE]
     finary_uapi me
     finary_uapi institution_connections
+    finary_uapi organizations
     finary_uapi dashboard net [all | 1w | 1m | ytd | 1y]
     finary_uapi dashboard gross [all | 1w | 1m | ytd | 1y]
     finary_uapi dashboard finary [all | 1w | 1m | ytd | 1y]
