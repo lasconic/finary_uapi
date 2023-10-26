@@ -19,9 +19,11 @@ def get_user_me_sharing_links(session: requests.Session) -> Any:
     url = f"{API_ROOT}/users/me/sharing_links"
     return get_and_print(session, url)
 
+
 def get_user_me_organizations(session: requests.Session) -> Any:
     url = f"{API_ROOT}/users/me/organizations"
     return get_and_print(session, url)
+
 
 def get_user_me_subscription_details(session: requests.Session) -> Any:
     url = f"{API_ROOT}/users/me/subscription_details"
