@@ -126,7 +126,7 @@ def get_portfolio_investments_transactions(
     )
 
 
-def get_portfolio_creditcards_transactions(
+def get_portfolio_credit_accounts_transactions(
     session: requests.Session,
     page: int = 1,
     per_page: int = 50,

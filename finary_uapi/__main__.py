@@ -105,7 +105,7 @@ from .user_portfolio import (
     get_portfolio_crowdlendings,
     get_portfolio_crowdlendings_distribution,
     get_portfolio_cryptos_distribution,
-    get_portfolio_creditcards_transactions,
+    get_portfolio_credit_accounts_transactions,
 )
 from .precious_metals import get_precious_metals
 from .user_generic_assets import (
@@ -380,7 +380,7 @@ def main() -> int:  # pragma: nocover
             result = get_loans(session)
         elif args["credit_accounts"]:
             if args["transactions"]:
-                result = get_portfolio_creditcards_transactions(session)
+                result = get_portfolio_credit_accounts_transactions(session)
             else:
                 result = get_credit_accounts(session)
         elif args["real_estates"]:
