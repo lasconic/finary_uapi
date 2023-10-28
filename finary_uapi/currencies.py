@@ -55,4 +55,3 @@ def get_fiatcurrency_by_code(session: requests.Session, code: str):
                 return currency
         return currency
     return {}
-    
