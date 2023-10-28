@@ -36,7 +36,9 @@ def get_display_currency_code(session: requests.Session):
     url = f"{API_ROOT}/users/me"
     x = session.get(url)
     display_currency_code = x.json()
-    return display_currency_code["result"]["ui_configuration"]["display_currency"]["code"]
+    return display_currency_code["result"]["ui_configuration"]["display_currency"][
+        "code"
+    ]
 
 
 def update_display_currency_by_code(session: requests.Session, code: str):
