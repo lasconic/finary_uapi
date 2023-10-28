@@ -5,6 +5,7 @@ from .real_estates import get_real_estates_placeid
 import json
 import logging
 from typing import Dict, Union
+from .user_me import get_display_currency_code, update_display_currency_by_code
 
 
 def get_user_real_estates(session: requests.Session):
@@ -18,6 +19,9 @@ def add_user_real_estates(
     category,
     # use to get the place ID from address
     address,
+    # currency code used by this real estate object
+    # Currently limited by Finary to "EUR", "USD", "SGD", "CHF", "GBP",or "CAD"
+    currency_code,
     # user estimated price in Euro
     user_estimated_value,
     description,
@@ -89,7 +93,13 @@ def add_user_real_estates(
     headers = {}
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
-    x = session.post(url, data=data_json, headers=headers)
+    if currency_code == get_display_currency_code(session):
+        x = session.post(url, data=data_json, headers=headers)
+    else:
+        current_display_currency = get_display_currency_code(session)
+        update_display_currency_by_code(session, currency_code)
+        x = session.post(url, data=data_json, headers=headers)
+        update_display_currency_by_code(session, current_display_currency)
 
     return x.json()
 
