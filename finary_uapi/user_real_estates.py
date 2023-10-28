@@ -19,7 +19,8 @@ def add_user_real_estates(
     category,
     # use to get the place ID from address
     address,
-    # currency code used by this real estate object - Currently limited by Finary to "EUR", "USD", "SGD", "CHF", "GBP",or "CAD"
+    # currency code used by this real estate object 
+    # - Currently limited by Finary to "EUR", "USD", "SGD", "CHF", "GBP",or "CAD"
     currency_code,
     # user estimated price in Euro
     user_estimated_value,
