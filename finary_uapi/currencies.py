@@ -31,11 +31,13 @@ def get_cryptocurrency_by_code(session: requests.Session, code: str):
         return currency
     return {}
 
+
 def get_display_currency_code(session: requests.Session):
     url = f"{API_ROOT}/users/me"
     x = session.get(url)
     display_currency_code = x.json()
     return display_currency_code["result"]["ui_configuration"]["display_currency"]["code"]
+
 
 def update_display_currency_by_code(session: requests.Session, code: str):
     """
@@ -43,13 +45,7 @@ def update_display_currency_by_code(session: requests.Session, code: str):
     Currently limited by Finary to "EUR", "USD", "SGD", "CHF", "GBP",or "CAD"
     """ 
     url = f"{API_ROOT}/users/me"
-    data = {
-        "ui_configuration": {
-            "display_currency":{
-                "code": code
-            }
-        }
-    }
+    data = {"ui_configuration": {"display_currency": {"code": code}}}
     data_json = json.dumps(data)
     headers = {}
     headers["Content-Length"] = str(len(data_json))
