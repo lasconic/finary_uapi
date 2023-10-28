@@ -44,7 +44,7 @@ def get_display_currency_code(session: requests.Session):
 def update_display_currency_by_code(session: requests.Session, code: str):
     """
     code = ISO 4217 three-letter code
-    Currently limited by Finary to "EUR", "USD", "SGD", "CHF", "GBP",or "CAD"
+    Currently limited by Finary to 'EUR', 'USD', 'SGD', 'CHF', 'GBP',or 'CAD'
     """ 
     url = f"{API_ROOT}/users/me"
     data = {"ui_configuration": {"display_currency": {"code": code}}}
