@@ -125,6 +125,7 @@ def get_portfolio_investments_transactions(
         session, portfolio_type, page, per_page, query, account_id, institution_id
     )
 
+
 def get_portfolio_creditcards_transactions(
     session: requests.Session,
     page: int = 1,
