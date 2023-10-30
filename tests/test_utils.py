@@ -66,19 +66,23 @@ def test_get_cryptocurrency_by_code_error(session: requests.Session) -> None:
     [
         ("USD", "United States Dollar"),
         ("EUR", "Euro"),
+        ("SGD", "Singapore Dollar"),
+        ("CHF", "Swiss Franc"),
+        ("GBP", "British Pound Sterling"),
+        ("CAD", "Canadian Dollar"),
     ],
 )
 def test_get_fiatcurrency_by_code(
     session: requests.Session, code: str, name: str
 ) -> None:
-    crypto = get_fiatcurrency_by_code(session, code)
-    assert crypto
-    assert crypto["name"] == name
+    fiat = get_fiatcurrency_by_code(session, code)
+    assert fiat
+    assert fiat["name"] == name
 
 
 def test_get_fiatcurrency_by_code_error(session: requests.Session) -> None:
-    crypto = get_fiatcurrency_by_code(session, "foobar")
-    assert not crypto
+    fiat = get_fiatcurrency_by_code(session, "foobar")
+    assert not fiat
 
 
 @pytest.mark.parametrize(

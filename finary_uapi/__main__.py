@@ -56,8 +56,8 @@ Usage:
     finary_uapi credit_accounts
     finary_uapi credit_accounts transactions
     finary_uapi real_estates
-    finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type>
-    finary_uapi real_estates add <category> <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage>
+    finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> [<currency_code>]
+    finary_uapi real_estates add <category> <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> [<currency_code>]
     finary_uapi real_estates update rent <asset_id> <user_estimated_value> <description> <buying_price> <ownership_percentage> <monthly_rent>
     finary_uapi real_estates update <category> <asset_id> <user_estimated_value> <description> <buying_price> <ownership_percentage>
     finary_uapi real_estates delete <asset_id>
@@ -116,7 +116,7 @@ from .user_generic_assets import (
 )
 from .user_real_estates import (
     get_user_real_estates,
-    add_user_real_estates,
+    add_user_real_estates_with_currency,
     update_user_real_estates,
     delete_user_real_estates,
 )
@@ -234,10 +234,11 @@ def main() -> int:  # pragma: nocover
                     args["<current_price>"],
                 )
             elif args["real_estates"]:
-                result = add_user_real_estates(
+                result = add_user_real_estates_with_currency(
                     session,
                     "rent" if args["rent"] else args["<category>"],
                     args["<address>"],
+                    args["<currency_code>"],
                     args["<user_estimated_value>"],
                     args["<description>"],
                     args["<surface>"],
