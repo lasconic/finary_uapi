@@ -1,7 +1,7 @@
 import pytest
 import requests
 from finary_uapi.bank_account_types import get_bank_account_type_per_name
-from finary_uapi.currencies import get_cryptocurrency_by_code
+from finary_uapi.currencies import get_cryptocurrency_by_code, get_fiatcurrency_by_code
 from finary_uapi.signin import signin
 from finary_uapi.auth import prepare_session
 from finary_uapi.user_holdings_accounts import get_holdings_account_per_name_or_id
@@ -58,6 +58,26 @@ def test_get_cryptocurrency_by_code(
 
 def test_get_cryptocurrency_by_code_error(session: requests.Session) -> None:
     crypto = get_cryptocurrency_by_code(session, "foobar")
+    assert not crypto
+
+
+@pytest.mark.parametrize(
+    "code, name",
+    [
+        ("USD", "United States Dollar"),
+        ("EUR", "Euro"),
+    ],
+)
+def test_get_fiatcurrency_by_code(
+    session: requests.Session, code: str, name: str
+) -> None:
+    crypto = get_fiatcurrency_by_code(session, code)
+    assert crypto
+    assert crypto["name"] == name
+
+
+def test_get_fiatcurrency_by_code_error(session: requests.Session) -> None:
+    crypto = get_fiatcurrency_by_code(session, "foobar")
     assert not crypto
 
 

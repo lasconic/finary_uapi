@@ -20,6 +20,9 @@ def get_currencies(session: requests.Session, type: str, query: str):
     return x.json()
 
 
+# utils functions
+
+
 def get_currency_by_code(session: requests.Session, type: str, code: str):
     """
     type = 'crypto' or 'fiat'
@@ -34,24 +37,9 @@ def get_currency_by_code(session: requests.Session, type: str, code: str):
     return {}
 
 
-# utils functions
 def get_cryptocurrency_by_code(session: requests.Session, code: str):
-    currencies = get_currencies(session, "crypto", code)
-    if len(currencies["result"]) > 0:
-        currency = currencies["result"][0]
-        for currency in currencies["result"]:
-            if currency["code"] == code:
-                return currency
-        return currency
-    return {}
+    return get_currency_by_code(session, "crypto", code)
 
 
 def get_fiatcurrency_by_code(session: requests.Session, code: str):
-    currencies = get_currencies(session, "fiat", code)
-    if len(currencies["result"]) > 0:
-        currency = currencies["result"][0]
-        for currency in currencies["result"]:
-            if currency["code"] == code:
-                return currency
-        return currency
-    return {}
+    return get_currency_by_code(session, "fiat", code)
