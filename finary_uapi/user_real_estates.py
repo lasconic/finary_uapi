@@ -19,9 +19,6 @@ def add_user_real_estates(
     category,
     # use to get the place ID from address
     address,
-    # currency code used by this real estate object
-    # Currently limited by Finary to "EUR", "USD", "SGD", "CHF", "GBP",or "CAD"
-    currency_code,
     # user estimated price in Euro
     user_estimated_value,
     description,
@@ -93,14 +90,7 @@ def add_user_real_estates(
     headers = {}
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
-    if currency_code == get_display_currency_code(session):
-        x = session.post(url, data=data_json, headers=headers)
-    else:
-        current_display_currency = get_display_currency_code(session)
-        update_display_currency_by_code(session, currency_code)
-        x = session.post(url, data=data_json, headers=headers)
-        update_display_currency_by_code(session, current_display_currency)
-
+    x = session.post(url, data=data_json, headers=headers)
     return x.json()
 
 
@@ -157,3 +147,70 @@ def delete_user_real_estates(session: requests.Session, asset_id):
     x = session.delete(url)
     logging.debug(x.status_code)
     return x.status_code
+
+
+# convenience functions
+
+
+def add_user_real_estates_with_currency(
+    session: requests.Session,
+    category,
+    address,
+    # currency code used by this real estate object
+    # Currently limited by Finary to "EUR", "USD", "SGD", "CHF", "GBP",or "CAD"
+    currency_code,
+    user_estimated_value,
+    description,
+    surface,
+    buying_price,
+    building_type,
+    ownership_percentage,
+    monthly_charges=0,
+    monthly_rent=0,
+    yearly_taxes=0,
+    rental_period="annual",
+    rental_type="nue",
+):
+    current_display_currency = ""
+    if not currency_code:
+        currency_code = ""
+    else:  # minimize number of calls, currency None or "" -> no call
+        current_display_currency = get_display_currency_code(session)
+    result = ""
+    if currency_code == current_display_currency:
+        result = add_user_real_estates(
+            session,
+            category,
+            address,
+            user_estimated_value,
+            description,
+            surface,
+            buying_price,
+            building_type,
+            ownership_percentage,
+            monthly_charges,
+            monthly_rent,
+            yearly_taxes,
+            rental_period,
+            rental_type,
+        )
+    else:
+        update_display_currency_by_code(session, currency_code)
+        result = add_user_real_estates(
+            session,
+            category,
+            address,
+            user_estimated_value,
+            description,
+            surface,
+            buying_price,
+            building_type,
+            ownership_percentage,
+            monthly_charges,
+            monthly_rent,
+            yearly_taxes,
+            rental_period,
+            rental_type,
+        )
+        update_display_currency_by_code(session, current_display_currency)
+    return result
