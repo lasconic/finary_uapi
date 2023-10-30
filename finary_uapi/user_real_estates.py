@@ -146,4 +146,4 @@ def delete_user_real_estates(session: requests.Session, asset_id):
     url = f"{API_ROOT}/users/me/real_estates/{asset_id}"
     x = session.delete(url)
     logging.debug(x.status_code)
-    return x.json()
+    return x.status_code
