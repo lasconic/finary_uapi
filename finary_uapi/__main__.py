@@ -236,7 +236,7 @@ def main() -> int:  # pragma: nocover
             elif args["real_estates"]:
                 result = add_user_real_estates(
                     session,
-                    "rent" if args["<rent>"] else args["<category>"],
+                    "rent" if args["rent"] else args["<category>"],
                     args["<address>"],
                     args["<user_estimated_value>"],
                     args["<description>"],
@@ -301,7 +301,7 @@ def main() -> int:  # pragma: nocover
             elif args["real_estates"]:
                 result = update_user_real_estates(
                     session,
-                    "rent" if args["<rent>"] else args["<category>"],
+                    "rent" if args["rent"] else args["<category>"],
                     args["<asset_id>"],
                     args["<user_estimated_value>"],
                     args["<description>"],
