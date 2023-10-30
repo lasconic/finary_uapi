@@ -84,6 +84,9 @@ def get_portfolio_transactions(
     account_id: str = "",
     institution_id: str = "",
 ):
+    """
+    `portfolio_type` is  "investments", "checking_accounts", "credit_accounts"
+    """
     url = f"{portfolio_api}/{portfolio_type}/transactions"
     params: Dict[str, Union[str, int]] = {}
     params["page"] = page
@@ -98,7 +101,7 @@ def get_portfolio_transactions(
     return x.json()
 
 
-def get_portfolio_checking_transactions(
+def get_portfolio_checking_accounts_transactions(
     session: requests.Session,
     page: int = 1,
     per_page: int = 50,
@@ -107,20 +110,6 @@ def get_portfolio_checking_transactions(
     institution_id: str = "",
 ):
     portfolio_type = "checking_accounts"
-    return get_portfolio_transactions(
-        session, portfolio_type, page, per_page, query, account_id, institution_id
-    )
-
-
-def get_portfolio_investments_transactions(
-    session: requests.Session,
-    page: int = 1,
-    per_page: int = 50,
-    query: str = "",
-    account_id: str = "",
-    institution_id: str = "",
-):
-    portfolio_type = "investments"
     return get_portfolio_transactions(
         session, portfolio_type, page, per_page, query, account_id, institution_id
     )
@@ -135,6 +124,20 @@ def get_portfolio_credit_accounts_transactions(
     institution_id: str = "",
 ):
     portfolio_type = "credit_accounts"
+    return get_portfolio_transactions(
+        session, portfolio_type, page, per_page, query, account_id, institution_id
+    )
+
+
+def get_portfolio_investments_transactions(
+    session: requests.Session,
+    page: int = 1,
+    per_page: int = 50,
+    query: str = "",
+    account_id: str = "",
+    institution_id: str = "",
+):
+    portfolio_type = "investments"
     return get_portfolio_transactions(
         session, portfolio_type, page, per_page, query, account_id, institution_id
     )

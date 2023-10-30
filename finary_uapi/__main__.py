@@ -100,7 +100,7 @@ from .institutions import get_institutions
 from .user_portfolio import (
     get_portfolio_investments,
     get_portfolio_investments_dividends,
-    get_portfolio_checking_transactions,
+    get_portfolio_checking_accounts_transactions,
     get_portfolio_investments_transactions,
     get_portfolio_crowdlendings,
     get_portfolio_crowdlendings_distribution,
@@ -184,7 +184,7 @@ def main() -> int:  # pragma: nocover
             result = get_portfolio(session, period)
         elif args["checking_accounts"]:
             if args["transactions"]:
-                result = get_portfolio_checking_transactions(session)
+                result = get_portfolio_checking_accounts_transactions(session)
             else:
                 result = get_checking_accounts(session, period)
         elif args["saving_accounts"]:
