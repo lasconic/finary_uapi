@@ -54,6 +54,7 @@ Usage:
     finary_uapi fees
     finary_uapi loans
     finary_uapi credit_accounts
+    finary_uapi credit_accounts transactions
     finary_uapi real_estates
     finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type>
     finary_uapi real_estates add <category> <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage>
@@ -104,6 +105,7 @@ from .user_portfolio import (
     get_portfolio_crowdlendings,
     get_portfolio_crowdlendings_distribution,
     get_portfolio_cryptos_distribution,
+    get_portfolio_credit_accounts_transactions,
 )
 from .precious_metals import get_precious_metals
 from .user_generic_assets import (
@@ -377,7 +379,10 @@ def main() -> int:  # pragma: nocover
         elif args["loans"]:
             result = get_loans(session)
         elif args["credit_accounts"]:
-            result = get_credit_accounts(session)
+            if args["transactions"]:
+                result = get_portfolio_credit_accounts_transactions(session)
+            else:
+                result = get_credit_accounts(session)
         elif args["real_estates"]:
             result = get_user_real_estates(session)
         elif args["scpis"]:
