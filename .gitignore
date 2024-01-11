@@ -2,6 +2,7 @@
 localCookiesMozilla.txt
 crypto_transactions_record_*
 credentials.json
+jwt.json
 isoenv/
 venv/
 
