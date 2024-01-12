@@ -12,8 +12,8 @@ from finary_uapi.securities import guess_security
 def test_signin() -> None:
     """test signin"""
     result = signin()
-    assert result["message"] == "Created"
-    assert result["error"] is None
+    assert result["response"]
+    assert result["response"]["status"] == "complete"
 
 
 @pytest.fixture
