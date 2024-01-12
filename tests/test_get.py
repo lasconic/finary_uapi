@@ -9,8 +9,8 @@ from finary_uapi.securities import get_securities
 def test_signin() -> None:
     """test signin"""
     result = signin()
-    assert result["message"] == "Created"
-    assert result["error"] is None
+    assert result["response"]
+    assert result["response"]["status"] == "complete"
 
 
 @pytest.fixture
@@ -59,20 +59,8 @@ def session() -> requests.Session:
         ("user_scpis", "", {}, 1),
         ("user_securities", "", {}, 1),
         ("user_startups", "", {}, 1),
-        ("views", "get_dashboard", {"type": "net", "period": "all"}, 1),
-        ("views", "get_dashboard", {"type": "gross", "period": "all"}, 1),
-        ("views", "get_dashboard", {"type": "finary", "period": "all"}, 1),
-        ("views", "get_portfolio", {"period": "all"}, 1),
-        ("views", "get_savings_accounts", {"period": "all"}, 1),
-        ("views", "get_checking_accounts", {"period": "all"}, 1),
-        ("views", "get_other_assets", {"period": "all"}, 1),
-        ("views", "get_fonds_euro", {"period": "all"}, 1),
-        ("views", "get_real_estates", {"period": "all"}, 1),
-        ("views", "get_commodities", {"period": "all"}, 1),
         ("views", "get_insights", {}, 1),
-        ("views", "get_fees", {}, 1),
         ("views", "get_loans", {}, 1),
-        ("views", "get_credit_accounts", {}, 1),
         ("watches", "", {"query": "rolex"}, 1),
     ],
 )
@@ -88,6 +76,7 @@ def test_generic_test(
     module = import_module(f"finary_uapi.{module_name}")
     bar = getattr(module, function_name)
     result = bar(session, **args)
+    assert result
     assert result["message"] == "OK"
     assert result["error"] is None
     if result_count > 0:
@@ -95,6 +84,6 @@ def test_generic_test(
 
 
 def test_get_security_error(session: requests.Session) -> None:
-    securities = get_securities(session, "US5949181045")
+    securities = get_securities(session, "US5949181045XDE")
     assert securities
     assert securities["result"] == []

@@ -5,18 +5,8 @@ Usage:
     finary_uapi me
     finary_uapi institution_connections
     finary_uapi organizations
-    finary_uapi dashboard net [all | 1w | 1m | ytd | 1y]
-    finary_uapi dashboard gross [all | 1w | 1m | ytd | 1y]
-    finary_uapi dashboard finary [all | 1w | 1m | ytd | 1y]
-    finary_uapi portfolio [all | 1w | 1m | ytd | 1y]
-    finary_uapi commodities [all | 1w | 1m | ytd | 1y]
-    finary_uapi checking_accounts [all | 1w | 1m | ytd | 1y]
     finary_uapi checking_accounts transactions
-    finary_uapi fonds_euro_view [all | 1w | 1m | ytd | 1y]
     finary_uapi fonds_euro
-    finary_uapi other_assets [all | 1w | 1m | ytd | 1y]
-    finary_uapi saving_accounts [all | 1w | 1m | ytd | 1y]
-    finary_uapi real_estates [all | 1w | 1m | ytd | 1y]
     finary_uapi startups
     finary_uapi investments
     finary_uapi investments dividends
@@ -51,9 +41,7 @@ Usage:
     finary_uapi securities add <code> <quantity> <price> <account_id>
     finary_uapi securities delete <security_id>
     finary_uapi insights
-    finary_uapi fees
     finary_uapi loans
-    finary_uapi credit_accounts
     finary_uapi credit_accounts transactions
     finary_uapi real_estates
     finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> [<currency_code>]
@@ -68,7 +56,6 @@ Usage:
     finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
     finary_uapi import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
-    finary_uapi sharing SHARING_CODE_OR_URL [--secret=SECRET_CODE]
 
 
 Options:
@@ -123,7 +110,6 @@ from .user_real_estates import (
 from .user_scpis import get_user_scpis
 from .scpis import get_scpis
 from .securities import get_securities
-from .sharing import get_sharing
 from .signin import signin
 from .user_startups import get_user_startups
 from .user_cryptos import (
@@ -145,17 +131,7 @@ from .user_securities import (
     get_user_securities,
     delete_user_security,
 )
-from .views import a_period, a_dashboard_type, get_fees, get_insights, get_loans
-from .views import (
-    get_checking_accounts,
-    get_commodities,
-    get_dashboard,
-    get_fonds_euro,
-    get_other_assets,
-    get_portfolio,
-    get_savings_accounts,
-    get_credit_accounts,
-)
+from .views import get_insights, get_loans
 from .watches import get_watches
 
 
@@ -171,30 +147,15 @@ def main() -> int:  # pragma: nocover
         result = signin(args["MFA_CODE"])
     else:
         session = prepare_session()
-        perioda = [i for i in a_period if args[i]]
-        period = perioda[0] if perioda else ""
         if args["me"]:
             result = get_user_me(session)
         elif args["institution_connections"]:
             result = get_user_me_institution_connections(session)
-        elif args["dashboard"]:
-            type = [i for i in a_dashboard_type if args[i]]
-            result = get_dashboard(session, type[0] if type else "", period)
-        elif args["portfolio"]:
-            result = get_portfolio(session, period)
         elif args["checking_accounts"]:
             if args["transactions"]:
                 result = get_portfolio_checking_accounts_transactions(session)
-            else:
-                result = get_checking_accounts(session, period)
-        elif args["saving_accounts"]:
-            result = get_savings_accounts(session, period)
-        elif args["fonds_euro_view"]:
-            result = get_fonds_euro(session, period)
         elif args["fonds_euro"]:
             result = get_user_fonds_euro(session)
-        elif args["other_assets"]:
-            result = get_other_assets(session, period)
         elif args["startups"]:
             result = get_user_startups(session)
         elif args["search"]:
@@ -334,8 +295,6 @@ def main() -> int:  # pragma: nocover
                 delete_user_precious_metals(session, args["<commodity_id>"])
             elif args["securities"]:
                 delete_user_security(session, args["<security_id>"])
-        elif args["commodities"]:
-            result = get_commodities(session, period)
         elif args["crowdlendings"]:
             if args["distribution"]:
                 result = get_portfolio_crowdlendings_distribution(session)
@@ -373,8 +332,6 @@ def main() -> int:  # pragma: nocover
             result = get_user_precious_metals(session)
         elif args["securities"]:
             result = get_user_securities(session)
-        elif args["fees"]:
-            result = get_fees(session)
         elif args["insights"]:
             result = get_insights(session)
         elif args["loans"]:
@@ -382,8 +339,6 @@ def main() -> int:  # pragma: nocover
         elif args["credit_accounts"]:
             if args["transactions"]:
                 result = get_portfolio_credit_accounts_transactions(session)
-            else:
-                result = get_credit_accounts(session)
         elif args["real_estates"]:
             result = get_user_real_estates(session)
         elif args["scpis"]:
@@ -453,8 +408,6 @@ def main() -> int:  # pragma: nocover
                         add_imported_securities_to_account(
                             session, args["--add"], to_be_imported, dry_run=args["-d"]
                         )
-        elif args["sharing"]:
-            result = get_sharing(args["SHARING_CODE_OR_URL"], args["--secret"] or "")
     if result:
         print(json.dumps(result, indent=4))
 
