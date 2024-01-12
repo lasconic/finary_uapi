@@ -88,8 +88,10 @@ def update_holdings_account(
 
 
 # convenience functions
-def get_holdings_account_per_name_or_id(session: requests.Session, name):
-    accounts = get_holdings_accounts(session)
+def get_holdings_account_per_name_or_id(
+    session: requests.Session, name: str, type: str = ""
+):
+    accounts = get_holdings_accounts(session, type)
     for a in accounts["result"]:
         if a["name"] == name or a["id"] == name:
             return a
