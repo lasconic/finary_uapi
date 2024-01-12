@@ -22,8 +22,8 @@ Usage:
     finary_uapi precious_metals
     finary_uapi precious_metals add <name> <quantity> <price>
     finary_uapi precious_metals delete <commodity_id>
-    finary_uapi holdings_accounts [crypto | stocks | <account_name>]
-    finary_uapi holdings_accounts add (crypto | stocks) <account_name>
+    finary_uapi holdings_accounts [crypto | stocks | crowdlending | <account_name>]
+    finary_uapi holdings_accounts add (crypto | stocks | crowdlending) <account_name>
     finary_uapi holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
     finary_uapi holdings_accounts delete <account_id>
     finary_uapi holdings_accounts update <account_id> <account_name> [<account_balance>]
@@ -320,7 +320,7 @@ def main() -> int:  # pragma: nocover
                     session, args["<account_name>"]
                 )
             else:
-                holdings_account_types = ["crypto", "stocks"]
+                holdings_account_types = ["crypto", "stocks", "crowdlending"]
                 hats = [i for i in holdings_account_types if args[i]]
                 holdings_account_type = hats[0] if hats else ""
                 result = get_holdings_accounts(session, holdings_account_type)

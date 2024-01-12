@@ -20,7 +20,7 @@ def add_holdings_account(
     balance=None,
 ):
     """
-    type can be "crypto" or "stocks"
+    type can be "crypto", "stocks", "crowdlending"
     #TODO currency code seems to be an old API, maybe replace by currency_id
     """
     url = holdings_accounts_url
@@ -46,7 +46,7 @@ def add_holdings_account(
 
 def get_holdings_accounts(session: requests.Session, type: str = ""):
     """
-    type can be "crypto" or "stocks", or empty for all accounts
+    type can be "crypto", "stocks", "crowdlending" or empty for all accounts
     """
     url = holdings_accounts_url
     params = {}
