@@ -147,7 +147,7 @@ def main() -> int:  # pragma: nocover
     """Main entry point."""
     import logging
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     args = docopt(__doc__)
     result = ""
