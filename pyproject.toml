@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "finary-uapi"
-version = "0.1.9"
+version = "0.2.0"
 description = "Finary API client and command line tool to interact with your Finary account."
 authors = ["lasconic <lasconic@gmail.com>"]
 license = "MIT License"

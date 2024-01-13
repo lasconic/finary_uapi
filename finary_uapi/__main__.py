@@ -13,6 +13,8 @@ Usage:
     finary_uapi investments transactions
     finary_uapi crowdlendings
     finary_uapi crowdlendings distribution
+    finary_uapi crowdlendings add <account_name> <name> <annual_yield> <month_duration> <initial_investment> <current_price> <currency_code> <start_date>
+    finary_uapi crowdlendings delete <crowdlending_id>
     finary_uapi cryptos
     finary_uapi cryptos distribution
     finary_uapi cryptos add <code> <quantity> <price> <account_id>
@@ -22,8 +24,8 @@ Usage:
     finary_uapi precious_metals
     finary_uapi precious_metals add <name> <quantity> <price>
     finary_uapi precious_metals delete <commodity_id>
-    finary_uapi holdings_accounts [crypto | stocks | <account_name>]
-    finary_uapi holdings_accounts add (crypto | stocks) <account_name>
+    finary_uapi holdings_accounts [crypto | stocks | crowdlending | <account_name>]
+    finary_uapi holdings_accounts add (crypto | stocks | crowdlending) <account_name>
     finary_uapi holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
     finary_uapi holdings_accounts delete <account_id>
     finary_uapi holdings_accounts update <account_id> <account_name> [<account_balance>]
@@ -52,6 +54,7 @@ Usage:
     finary_uapi scpis search QUERY
     finary_uapi scpis
     finary_uapi watches search QUERY
+    finary_uapi import crowdlending_csv FILENAME
     finary_uapi import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
@@ -80,6 +83,7 @@ from .user_holdings_accounts import (
     get_holdings_account_per_name_or_id,
     update_holdings_account,
 )
+from .importers.crowdlending_generic_csv import import_crowdlending_generic_csv
 from .importers.cryptocom import import_cc_csv
 from .importers.crypto_generic_csv import import_crypto_generic_csv
 from .importers.stocks_generic_csv import import_stocks_generic_csv
@@ -112,6 +116,10 @@ from .scpis import get_scpis
 from .securities import get_securities
 from .signin import signin
 from .user_startups import get_user_startups
+from .user_crowdlendings import (
+    add_user_crowdlending_to_account,
+    delete_user_crowdlending,
+)
 from .user_cryptos import (
     add_user_crypto_by_code,
     delete_user_crypto_by_code,
@@ -177,7 +185,19 @@ def main() -> int:  # pragma: nocover
                 print("Unknown resource for search")
                 return 1
         elif args["add"]:
-            if args["cryptos"]:
+            if args["crowdlendings"]:
+                result = add_user_crowdlending_to_account(
+                    session,
+                    args["<account_name>"],
+                    args["<annual_yield>"],
+                    args["<currency_code>"],
+                    args["<current_price>"],
+                    args["<initial_investment>"],
+                    args["<month_duration>"],
+                    args["<name>"],
+                    args["<start_date>"],
+                )
+            elif args["cryptos"]:
                 result = add_user_crypto_by_code(
                     session,
                     args["<code>"],
@@ -279,7 +299,9 @@ def main() -> int:  # pragma: nocover
                     args["<account_balance>"],
                 )
         elif args["delete"]:
-            if args["cryptos"]:
+            if args["crowdlendings"]:
+                result = delete_user_crowdlending(session, args["<crowdlending_id>"])
+            elif args["cryptos"]:
                 result = delete_user_crypto_by_code(
                     session,
                     args["<code>"],
@@ -320,7 +342,7 @@ def main() -> int:  # pragma: nocover
                     session, args["<account_name>"]
                 )
             else:
-                holdings_account_types = ["crypto", "stocks"]
+                holdings_account_types = ["crypto", "stocks", "crowdlending"]
                 hats = [i for i in holdings_account_types if args[i]]
                 holdings_account_type = hats[0] if hats else ""
                 result = get_holdings_accounts(session, holdings_account_type)
@@ -345,21 +367,20 @@ def main() -> int:  # pragma: nocover
             result = get_user_scpis(session)
         elif args["import"]:
             to_be_imported = {}
-            crypto_import = True
-            if args["cryptocom"]:
+            if args["crowdlending_csv"]:
+                to_be_imported = import_crowdlending_generic_csv(args["FILENAME"])
+            elif args["cryptocom"]:
                 to_be_imported = import_cc_csv(args["FILENAME"])
             elif args["crypto_csv"]:
                 to_be_imported = import_crypto_generic_csv(args["FILENAME"])
             elif args["stocks_csv"]:
                 to_be_imported = import_stocks_generic_csv(args["FILENAME"])
-                crypto_import = False
             elif args["stocks_json"]:
                 with open(args["FILENAME"], "r") as input_file:
                     to_be_imported = json.loads(input_file.read())
-                crypto_import = False
 
             if to_be_imported:
-                if crypto_import:
+                if args["cryptocom"] or args["crypto_csv"]:
                     if args["--new"]:
                         account = add_holdings_account(session, args["--new"], "crypto")
                         for crypto_code in to_be_imported:
@@ -391,7 +412,7 @@ def main() -> int:  # pragma: nocover
                                 crypto_line["price"],
                                 args["--add"],
                             )
-                else:  # stocks import
+                elif args["stocks_csv"] or args["stocks_json"]:  # stocks import
                     if args["--new"]:
                         add_imported_securities_to_account(
                             session, args["--new"], to_be_imported, dry_run=args["-d"]
@@ -407,6 +428,19 @@ def main() -> int:  # pragma: nocover
                     elif args["--add"]:
                         add_imported_securities_to_account(
                             session, args["--add"], to_be_imported, dry_run=args["-d"]
+                        )
+                else:  # crowdlending
+                    for line in to_be_imported:
+                        add_user_crowdlending_to_account(
+                            session,
+                            line["account_name"],
+                            line["annual_yield"],
+                            line["currency_code"],
+                            line["current_price"],
+                            line["initial_investment"],
+                            line["month_duration"],
+                            line["name"],
+                            line["start_date"],
                         )
     if result:
         print(json.dumps(result, indent=4))

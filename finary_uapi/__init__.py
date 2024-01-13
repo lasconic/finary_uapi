@@ -7,7 +7,7 @@ You can always get the latest version of this module at:
     https://github.com/lasconic/finary-uapi
 """
 
-__version__ = "0.1.9"
+__version__ = "0.2.0"
 __author__ = "lasconic"
 __copyright__ = """
 Copyright (c) 2021-2022, lasconic
