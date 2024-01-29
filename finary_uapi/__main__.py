@@ -5,6 +5,7 @@ Usage:
     finary_uapi me
     finary_uapi institution_connections
     finary_uapi organizations
+    finary_uapi timeseries <period> <type>
     finary_uapi checking_accounts transactions
     finary_uapi fonds_euro
     finary_uapi startups
@@ -97,6 +98,7 @@ from .user_portfolio import (
     get_portfolio_crowdlendings_distribution,
     get_portfolio_cryptos_distribution,
     get_portfolio_credit_accounts_transactions,
+    get_portfolio_timeseries,
 )
 from .precious_metals import get_precious_metals
 from .user_generic_assets import (
@@ -336,6 +338,8 @@ def main() -> int:  # pragma: nocover
                 result = get_portfolio_investments_transactions(session)
             else:
                 result = get_portfolio_investments(session)
+        elif args["timeseries"]:
+            result = get_portfolio_timeseries(session, args["<period>"], args["<type>"])
         elif args["holdings_accounts"]:
             if args["<account_name>"]:
                 result = get_holdings_account_per_name_or_id(
