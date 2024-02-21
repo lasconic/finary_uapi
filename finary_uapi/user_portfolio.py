@@ -37,15 +37,15 @@ def get_portfolio_investments(session: requests.Session):
     return get_portfolio(session, "investments")
 
 
-def get_portfolio_timeseries(
-    session: requests.Session, portfolio_type: str, period: str, type: str
-):
+def get_portfolio_timeseries(session: requests.Session, period: str, type: str):
     """
-    `portfolio_type` is  "investments", "cryptos", "crowdlendings"
-    `period` can be "all", "1w", "1m", "ytd", "1y", it not specified, Finary will use "all"
+    `period` can be "all", "1w", "1m", "ytd", "1y". If not specified, Finary will use "all"
+    `type` can be "gross", "net", "finary" (aka financial)
     """
-    url = f"{portfolio_api}/{portfolio_type}/timeseries"
+    url = f"{portfolio_api}/timeseries"
     params = {}
+    if type:
+        params["type"] = type
     if period:
         params["period"] = period
     x = session.get(url, params=params)
