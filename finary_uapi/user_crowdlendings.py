@@ -18,6 +18,19 @@ def get_user_crowdlendings(session: requests.Session):
     return x.json()
 
 
+def update_user_crowdlending(session: requests.Session, crowdlending):
+    crowdlending_id = crowdlending["id"]
+    url = f"{CROWDLENDINGS_URL}/{crowdlending_id}"
+    crowdlending_json = json.dumps(crowdlending)
+    headers = {}
+    headers["Content-Length"] = str(len(crowdlending_json))
+    headers["Content-Type"] = "application/json"
+    x = session.put(url, data=crowdlending_json, headers=headers)
+    logging.debug(x.status_code)
+    logging.debug(json.dumps(x.json(), indent=4))
+    return x.json()
+
+
 def delete_user_crowdlending(session: requests.Session, crowdlending_id):
     """
     crowdlending_id is the numerical id of the crowdlending for this user, as provided by GET
@@ -53,7 +66,7 @@ def add_user_crowdlending(
     data["name"] = name
     data["start_date"] = start_date
     data_json = json.dumps(data)
-    print(data_json)
+    # print(data_json)
     headers = {}
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
@@ -101,3 +114,65 @@ def add_user_crowdlending_to_account(
         name,
         start_date,
     )
+
+
+def check_if_present(crowdlendings, line):
+    result = {}
+    for project in crowdlendings["result"]:
+        if (
+            project["account"]["name"] == line["account_name"]
+            and project["name"] == line["name"]
+        ):
+            result = project
+            break
+    return result
+
+
+def add_imported_user_crowdlendings(
+    session: requests.Session, to_be_imported, dry_run, clean
+):
+    crowdlendings = get_user_crowdlendings(session)
+
+    for line in to_be_imported:
+        if project := check_if_present(crowdlendings, line):  # type: ignore[no-untyped-call]
+            if float(project["current_price"]) != float(line["current_price"]):
+                if dry_run:
+                    logging.info(
+                        f"Update {project['account']['name']} - {project['name']}"
+                    )
+                else:
+                    # update
+                    project["current_price"] = line["current_price"]
+                    update_user_crowdlending(session, project)
+        else:
+            if not dry_run:
+                add_user_crowdlending_to_account(
+                    session,
+                    line["account_name"],
+                    line["annual_yield"],
+                    line["currency_code"],
+                    line["current_price"],
+                    line["initial_investment"],
+                    line["month_duration"],
+                    line["name"],
+                    line["start_date"],
+                )
+            else:
+                logging.info(f"Add {line}")
+
+    if clean:
+        for project in crowdlendings["result"]:
+            found = False
+            for line in to_be_imported:
+                if (
+                    project["account"]["name"] == line["account_name"]
+                    and project["name"] == line["name"]
+                ):
+                    found = True
+            if not found:
+                if dry_run:
+                    logging.info(
+                        f"Delete {project['account']['name']} - {project['name']}"
+                    )
+                else:
+                    delete_user_crowdlending(session, project["id"])
