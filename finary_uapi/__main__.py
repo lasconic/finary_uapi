@@ -55,7 +55,7 @@ Usage:
     finary_uapi scpis search QUERY
     finary_uapi scpis
     finary_uapi watches search QUERY
-    finary_uapi import crowdlending_csv FILENAME
+    finary_uapi import crowdlending_csv FILENAME [-d] [-f]
     finary_uapi import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
@@ -67,6 +67,7 @@ Options:
   --edit=account_id   Edit the line with new value if it exists, create it otherwise
   --add=account_id    If line exists, add the quantity and change the price accordingly, create it otherwise
 """  # noqa
+
 import json
 import sys
 
@@ -121,6 +122,7 @@ from .user_startups import get_user_startups
 from .user_crowdlendings import (
     add_user_crowdlending_to_account,
     delete_user_crowdlending,
+    add_imported_user_crowdlendings,
 )
 from .user_cryptos import (
     add_user_crypto_by_code,
@@ -370,7 +372,7 @@ def main() -> int:  # pragma: nocover
         elif args["scpis"]:
             result = get_user_scpis(session)
         elif args["import"]:
-            to_be_imported = {}
+            to_be_imported = []
             if args["crowdlending_csv"]:
                 to_be_imported = import_crowdlending_generic_csv(args["FILENAME"])
             elif args["cryptocom"]:
@@ -434,18 +436,9 @@ def main() -> int:  # pragma: nocover
                             session, args["--add"], to_be_imported, dry_run=args["-d"]
                         )
                 else:  # crowdlending
-                    for line in to_be_imported:
-                        add_user_crowdlending_to_account(
-                            session,
-                            line["account_name"],
-                            line["annual_yield"],
-                            line["currency_code"],
-                            line["current_price"],
-                            line["initial_investment"],
-                            line["month_duration"],
-                            line["name"],
-                            line["start_date"],
-                        )
+                    add_imported_user_crowdlendings(
+                        session, to_be_imported, dry_run=args["-d"], clean=args["-f"]
+                    )
     if result:
         print(json.dumps(result, indent=4))
 
