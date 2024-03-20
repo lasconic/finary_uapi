@@ -27,8 +27,9 @@ def import_cc_csv(filename: str, diff_stacked: bool = False):
 
     list.pop(0)
     list.reverse()
-
+    op_type = set()
     results: CryptoLines = {}
+    cro_compound = 0.0
     for line in list:
         fields = line.split(",")
         currency = fields[2]
@@ -36,6 +37,7 @@ def import_cc_csv(filename: str, diff_stacked: bool = False):
         price = 0.0
 
         type = fields[9]
+        op_type.add(type)
         if type == "viban_purchase":
             currency = fields[4]
             amount = float(fields[5])
@@ -49,12 +51,20 @@ def import_cc_csv(filename: str, diff_stacked: bool = False):
             "crypto_earn_program_created",
             "crypto_earn_program_withdrawn",
             "finance.dpos.staking.crypto_wallet",
+            "finance.lockup.dpos_lock.crypto_wallet",
         ]:
             if not diff_stacked:
                 continue
             currency = currency + " (stacked)"
             price = 0
             amount = -amount
+        elif type in ["finance.lockup.dpos_compound_interest.crypto_wallet"]:
+            if diff_stacked:
+                currency = currency + " (stacked)"
+                price = 0
+                cro_compound += amount
+            add_quantity(results, currency, amount, price)
+            continue
         elif type in ["crypto_exchange", "trading.limit_order.crypto_wallet.exchange"]:
             exchange_currency = fields[4]
             exchange_amount = float(fields[5])
@@ -72,20 +82,24 @@ def import_cc_csv(filename: str, diff_stacked: bool = False):
     for key in delete:
         del results[key]
 
-    # remove stacked from total, and fix the price of stacked
-    for k in results.keys():
-        if k.endswith("(stacked)"):
-            original_currency = k.split(" ")[0]
-            # logging.debug(results[k])
-            # logging.debug(results[original_currency])
-            results[k]["price"] = results[original_currency]["price"]
-            results[original_currency]["quantity"] -= results[k]["quantity"]
+    if diff_stacked:
+        # add cro_compound a second time because we will remove it later
+        add_quantity(results, "CRO", cro_compound, 0)
+        # remove stacked from total, and fix the price of stacked
+        for k in results.keys():
+            if k.endswith("(stacked)"):
+                original_currency = k.split(" ")[0]
+                # logging.debug(results[k])
+                # logging.debug(results[original_currency])
+                results[k]["price"] = results[original_currency]["price"]
+                results[original_currency]["quantity"] -= results[k]["quantity"]
 
     total = 0.0
     for k in sorted(results.keys()):
         logging.debug(f'    "{k}": "{results[k]}"')
         total += results[k]["quantity"] * results[k]["price"]
     logging.info(f"Total invested : {total}")
+    print(sorted(op_type))
     return results
 
 
