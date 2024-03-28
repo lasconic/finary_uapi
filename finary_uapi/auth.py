@@ -7,7 +7,7 @@ from . import __version__ as FINARY_UAPI_VERSION
 
 
 def prepare_session() -> httpx.Client:
-    s = httpx.Client(timeout=10.0)
+    s = httpx.Client(timeout=60.0)
     file_name = JWT_FILENAME
 
     with open(file_name, "r") as json_file:
