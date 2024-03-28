@@ -1,20 +1,19 @@
-import requests
+import httpx
 from .constants import API_ROOT
 from .utils import get_and_print
 from .real_estates import get_real_estates_placeid
-import json
 import logging
 from typing import Dict, Union
 from .user_me import get_display_currency_code, update_display_currency_by_code
 
 
-def get_user_real_estates(session: requests.Session):
+def get_user_real_estates(session: httpx.Client):
     url = f"{API_ROOT}/users/me/real_estates"
     return get_and_print(session, url)
 
 
 def add_user_real_estates(
-    session: requests.Session,
+    session: httpx.Client,
     # category: rent, live_primary, live_secondary, other
     category,
     # use to get the place ID from address
@@ -86,16 +85,12 @@ def add_user_real_estates(
         data["yearly_taxes"] = int(yearly_taxes)
         data["rental_period"] = rental_period
         data["rental_type"] = rental_type
-    data_json = json.dumps(data)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.post(url, data=data_json, headers=headers)
+    x = session.post(url, json=data)
     return x.json()
 
 
 def update_user_real_estates(
-    session: requests.Session,
+    session: httpx.Client,
     # category: rent, live_primary, live_secondary, other
     category,
     # 'asset_id' is the id of the asset for this user, as provided by GET
@@ -131,15 +126,11 @@ def update_user_real_estates(
     data["id"] = asset_id
     if category == "rent":
         data["monthly_rent"] = int(monthly_rent)
-    data_json = json.dumps(data)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.put(url, data=data_json, headers=headers)
+    x = session.put(url, json=data)
     return x.json()
 
 
-def delete_user_real_estates(session: requests.Session, asset_id):
+def delete_user_real_estates(session: httpx.Client, asset_id):
     """
     `asset_id` is the id of the asset for this user, as provided by GET
     """
@@ -153,7 +144,7 @@ def delete_user_real_estates(session: requests.Session, asset_id):
 
 
 def add_user_real_estates_with_currency(
-    session: requests.Session,
+    session: httpx.Client,
     category,
     address,
     # currency code used by this real estate object

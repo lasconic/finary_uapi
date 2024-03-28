@@ -1,6 +1,6 @@
 import json
 import logging
-import requests
+import httpx
 
 from .utils import get_and_print
 from .constants import API_ROOT
@@ -8,12 +8,12 @@ from .constants import API_ROOT
 GENERIC_ASSET_ROOT = f"{API_ROOT}/users/me/generic_assets"
 
 
-def get_user_generic_assets(session: requests.Session):
+def get_user_generic_assets(session: httpx.Client):
     return get_and_print(session, GENERIC_ASSET_ROOT)
 
 
 def add_user_generic_asset(
-    session: requests.Session, name, category, quantity, buying_price, current_price
+    session: httpx.Client, name, category, quantity, buying_price, current_price
 ):
     """
     category must be a string as returned by generic_assets_categories
@@ -25,18 +25,14 @@ def add_user_generic_asset(
     data["quantity"] = quantity
     data["buying_price"] = buying_price
     data["current_price"] = current_price
-    data_json = json.dumps(data)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.post(url, data=data_json, headers=headers)
+    x = session.post(url, json=data)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
 def update_user_generic_asset(
-    session: requests.Session,
+    session: httpx.Client,
     asset_id,
     name,
     category,
@@ -52,17 +48,13 @@ def update_user_generic_asset(
     data["buying_price"] = buying_price
     data["current_price"] = current_price
     data["id"] = asset_id
-    data_json = json.dumps(data)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.put(url, data=data_json, headers=headers)
+    x = session.put(url, json=data)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
-def delete_user_generic_asset(session: requests.Session, asset_id):
+def delete_user_generic_asset(session: httpx.Client, asset_id):
     """
     `asset_id` is the id of the asset for this user, as provided by GET
     """

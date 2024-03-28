@@ -1,11 +1,11 @@
 import json
 import logging
-import requests
+import httpx
 from .constants import API_ROOT
 from fuzzywuzzy import fuzz
 
 
-def get_securities(session: requests.Session, query):
+def get_securities(session: httpx.Client, query):
     url = f"{API_ROOT}/securities/autocomplete"
     params = {}
     if query:
@@ -23,7 +23,7 @@ def get_securities(session: requests.Session, query):
     return result
 
 
-def guess_security(session: requests.Session, security):
+def guess_security(session: httpx.Client, security):
     ratio_cut = 45
     result = get_securities(session, security["isin_code"])
     finary_security = {}

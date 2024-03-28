@@ -1,11 +1,11 @@
 import json
 import logging
-import requests
+import httpx
 
 from .constants import API_ROOT
 
 
-def get_generic_asset_categories(session: requests.Session):
+def get_generic_asset_categories(session: httpx.Client):
     """ """
     url = f"{API_ROOT}/generic_asset_categories/autocomplete"
     x = session.get(url)

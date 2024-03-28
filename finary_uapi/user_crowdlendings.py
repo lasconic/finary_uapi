@@ -1,7 +1,7 @@
 import json
 import logging
 from typing import Dict, Union
-import requests
+import httpx
 from .constants import API_ROOT
 from .user_holdings_accounts import (
     get_holdings_account_per_name_or_id,
@@ -11,27 +11,23 @@ from .user_holdings_accounts import (
 CROWDLENDINGS_URL = f"{API_ROOT}/users/me/crowdlendings"
 
 
-def get_user_crowdlendings(session: requests.Session):
+def get_user_crowdlendings(session: httpx.Client):
     x = session.get(CROWDLENDINGS_URL)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
-def update_user_crowdlending(session: requests.Session, crowdlending):
+def update_user_crowdlending(session: httpx.Client, crowdlending):
     crowdlending_id = crowdlending["id"]
     url = f"{CROWDLENDINGS_URL}/{crowdlending_id}"
-    crowdlending_json = json.dumps(crowdlending)
-    headers = {}
-    headers["Content-Length"] = str(len(crowdlending_json))
-    headers["Content-Type"] = "application/json"
-    x = session.put(url, data=crowdlending_json, headers=headers)
+    x = session.put(url, json=crowdlending)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
-def delete_user_crowdlending(session: requests.Session, crowdlending_id):
+def delete_user_crowdlending(session: httpx.Client, crowdlending_id):
     """
     crowdlending_id is the numerical id of the crowdlending for this user, as provided by GET
     """
@@ -42,7 +38,7 @@ def delete_user_crowdlending(session: requests.Session, crowdlending_id):
 
 
 def add_user_crowdlending(
-    session: requests.Session,
+    session: httpx.Client,
     account_id: str,
     annual_yield: float,
     currency_code: str,
@@ -65,12 +61,7 @@ def add_user_crowdlending(
     data["month_duration"] = month_duration
     data["name"] = name
     data["start_date"] = start_date
-    data_json = json.dumps(data)
-    # print(data_json)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.post(CROWDLENDINGS_URL, data=data_json, headers=headers)
+    x = session.post(CROWDLENDINGS_URL, json=data)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
@@ -80,7 +71,7 @@ def add_user_crowdlending(
 
 
 def add_user_crowdlending_to_account(
-    session: requests.Session,
+    session: httpx.Client,
     account_name: str,
     annual_yield: float,
     currency_code: str,
@@ -129,7 +120,7 @@ def check_if_present(crowdlendings, line):
 
 
 def add_imported_user_crowdlendings(
-    session: requests.Session, to_be_imported, dry_run, clean
+    session: httpx.Client, to_be_imported, dry_run, clean
 ):
     crowdlendings = get_user_crowdlendings(session)
 

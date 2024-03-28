@@ -1,6 +1,6 @@
 import json
 import logging
-import requests
+import httpx
 from .constants import API_ROOT
 from .securities import get_securities, guess_security
 from .user_holdings_accounts import (
@@ -9,7 +9,7 @@ from .user_holdings_accounts import (
 )
 
 
-def get_user_securities(session: requests.Session):
+def get_user_securities(session: httpx.Client):
     url = f"{API_ROOT}/users/me/securities"
     x = session.get(url)
     logging.debug(json.dumps(x.json(), indent=4))
@@ -17,7 +17,7 @@ def get_user_securities(session: requests.Session):
 
 
 def add_user_security(
-    session: requests.Session,
+    session: httpx.Client,
     holdings_account_id,
     correlation_id,
     quantity,
@@ -29,18 +29,14 @@ def add_user_security(
     data["buying_price"] = buying_price
     data["correlation_id"] = correlation_id
     data["quantity"] = quantity
-    data_json = json.dumps(data)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.post(url, data=data_json, headers=headers)
+    x = session.post(url, json=data)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
 def update_user_security(
-    session: requests.Session, security, quantity, buying_price, account_id
+    session: httpx.Client, security, quantity, buying_price, account_id
 ):
     url = f"{API_ROOT}/users/me/securities/{security['id']}"
     data = {}
@@ -49,17 +45,13 @@ def update_user_security(
     data["buying_price"] = buying_price
     data["symbol"] = security["security"]
     data["holdings_account"] = {"id": account_id}
-    data_json = json.dumps(data)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.put(url, data=data_json, headers=headers)
+    x = session.put(url, json=data)
     logging.debug(x.status_code)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
-def delete_user_security(session: requests.Session, security_id):
+def delete_user_security(session: httpx.Client, security_id):
     """
     `security_id` is the id of the asset for this user, as provided by GET
     """
@@ -73,7 +65,7 @@ def delete_user_security(session: requests.Session, security_id):
 
 
 def add_user_security_by_symbol(
-    session: requests.Session, symbol, holdings_account_id, quantity, buying_price
+    session: httpx.Client, symbol, holdings_account_id, quantity, buying_price
 ):
     securities = get_securities(session, symbol)
     if securities["result"]:
@@ -91,7 +83,7 @@ def add_user_security_by_symbol(
 
 
 def add_user_security_by_symbol_to_account(
-    session: requests.Session, symbol, account_name, quantity, buying_price
+    session: httpx.Client, symbol, account_name, quantity, buying_price
 ):
     """ """
     holdings_account_id = ""
@@ -106,7 +98,7 @@ def add_user_security_by_symbol_to_account(
 
 
 def add_user_security_to_account(
-    session: requests.Session, security, account_name, quantity, buying_price
+    session: httpx.Client, security, account_name, quantity, buying_price
 ):
     """
     security is a json object as returned by get
@@ -127,7 +119,7 @@ def add_user_security_to_account(
 
 
 def add_imported_securities_to_account(
-    session: requests.Session,
+    session: httpx.Client,
     account_name_id: str,
     to_be_imported,
     edit=False,

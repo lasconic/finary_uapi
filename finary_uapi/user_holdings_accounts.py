@@ -1,7 +1,7 @@
 import json
 import logging
 from typing import Any, Dict
-import requests
+import httpx
 
 from .constants import API_ROOT
 from .institutions import get_institutions
@@ -11,7 +11,7 @@ holdings_accounts_url = f"{API_ROOT}/users/me/holdings_accounts"
 
 
 def add_holdings_account(
-    session: requests.Session,
+    session: httpx.Client,
     name: str,
     type: str,
     currency: str = "USD",
@@ -35,16 +35,12 @@ def add_holdings_account(
         data["institution"] = institution
     if balance is not None:
         data["balance"] = balance
-    data_json = json.dumps(data)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.post(url, data=data_json, headers=headers)
+    x = session.post(url, json=data)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
-def get_holdings_accounts(session: requests.Session, type: str = ""):
+def get_holdings_accounts(session: httpx.Client, type: str = ""):
     """
     type can be "crypto", "stocks", "crowdlending" or empty for all accounts
     """
@@ -57,7 +53,7 @@ def get_holdings_accounts(session: requests.Session, type: str = ""):
     return x.json()
 
 
-def delete_holdings_account(session: requests.Session, account_id: str):
+def delete_holdings_account(session: httpx.Client, account_id: str):
     """
     account_id is the alphanumeric id of the account, as provided by GET
     """
@@ -68,7 +64,7 @@ def delete_holdings_account(session: requests.Session, account_id: str):
 
 
 def update_holdings_account(
-    session: requests.Session, account_id: str, name: str, balance=None
+    session: httpx.Client, account_id: str, name: str, balance=None
 ):
     """
     account_id is the alphanumeric id of the account, as provided by GET
@@ -78,18 +74,14 @@ def update_holdings_account(
     data["name"] = name
     if balance is not None:
         data["balance"] = balance
-    data_json = json.dumps(data)
-    headers = {}
-    headers["Content-Length"] = str(len(data_json))
-    headers["Content-Type"] = "application/json"
-    x = session.put(url, data=data_json, headers=headers)
+    x = session.put(url, json=data)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
 
 # convenience functions
 def get_holdings_account_per_name_or_id(
-    session: requests.Session, name: str, type: str = ""
+    session: httpx.Client, name: str, type: str = ""
 ):
     accounts = get_holdings_accounts(session, type)
     for a in accounts["result"]:
@@ -99,7 +91,7 @@ def get_holdings_account_per_name_or_id(
 
 
 def add_checking_saving_account(
-    session: requests.Session,
+    session: httpx.Client,
     account_name: str,
     institution_name: str,
     account_type: str,

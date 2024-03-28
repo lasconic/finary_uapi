@@ -152,6 +152,7 @@ def main() -> int:  # pragma: nocover
     import logging
 
     logging.basicConfig(level=logging.INFO)
+    logging.getLogger("httpx").setLevel(logging.WARN)
 
     args = docopt(__doc__)
     result = ""

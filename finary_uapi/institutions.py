@@ -1,10 +1,10 @@
 import logging
 from .constants import API_ROOT
-import requests
+import httpx
 import json
 
 
-def get_institutions(session: requests.Session, name: str):
+def get_institutions(session: httpx.Client, name: str):
     """
     name
     """

@@ -2,7 +2,7 @@ import http.cookiejar
 import json
 import os
 from typing import Any
-import requests
+import httpx
 from .constants import (
     APP_ROOT,
     CLERK_ROOT,
@@ -10,6 +10,7 @@ from .constants import (
     CREDENTIAL_FILE,
     JWT_FILENAME,
 )
+from . import __version__ as FINARY_UAPI_VERSION
 
 
 def signin(otp_code: str = "") -> Any:
@@ -31,10 +32,15 @@ def signin(otp_code: str = "") -> Any:
     credentials["identifier"] = credentials["email"]
     credentials.pop("email")
 
-    session = requests.Session()
+    session = httpx.Client()
     cookie_jar_file = http.cookiejar.MozillaCookieJar(COOKIE_FILENAME)
     session.cookies = cookie_jar_file  # type: ignore
-    headers = {"Origin": f"{APP_ROOT}", "Referer": f"{APP_ROOT}"}
+
+    headers = {
+        "Origin": f"{APP_ROOT}",
+        "Referer": f"{APP_ROOT}",
+        "User-Agent": f"finary_uapi {FINARY_UAPI_VERSION}",
+    }
     x = session.post(signin_url, data=credentials, headers=headers)
     if x.status_code == 200:
         xjson = x.json()

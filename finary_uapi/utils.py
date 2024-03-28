@@ -1,9 +1,9 @@
 import json
 import logging
-import requests
+import httpx
 
 
-def get_and_print(session: requests.Session, url: str):
+def get_and_print(session: httpx.Client, url: str):
     x = session.get(url)
     result = {}
     if x.status_code in [200, 304]:

@@ -1,11 +1,13 @@
 import http.cookiejar
 import json
-import requests
+import httpx
+from httpx import Headers
 from .constants import APP_ROOT, CLERK_ROOT, COOKIE_FILENAME, JWT_FILENAME
+from . import __version__ as FINARY_UAPI_VERSION
 
 
-def prepare_session() -> requests.Session:
-    s = requests.Session()
+def prepare_session() -> httpx.Client:
+    s = httpx.Client(timeout=10.0)
     file_name = JWT_FILENAME
 
     with open(file_name, "r") as json_file:
@@ -24,7 +26,14 @@ def prepare_session() -> requests.Session:
     s.cookies = cookie_jar_file  # type: ignore
 
     tokens_url = f"{CLERK_ROOT}/v1/client/sessions/{session_id}/tokens"
-    headers = {"Origin": f"{APP_ROOT}", "Referer": f"{APP_ROOT}"}
+    headers = Headers(
+        {
+            "Origin": f"{APP_ROOT}",
+            "Referer": f"{APP_ROOT}",
+            "User-Agent": f"finary_uapi {FINARY_UAPI_VERSION}",
+        }
+    )
+    s.headers = headers
     x = s.post(tokens_url, headers=headers)
     if x.status_code == 200:
         session_token = x.json()["jwt"]

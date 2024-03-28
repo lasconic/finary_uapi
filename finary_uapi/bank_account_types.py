@@ -1,10 +1,10 @@
 import json
 import logging
-import requests
+import httpx
 from .constants import API_ROOT
 
 
-def get_bank_account_types(session: requests.Session, type: str):
+def get_bank_account_types(session: httpx.Client, type: str):
     """
     type = 'invest' (securities) or 'cash' (bank_accounts)
     """
@@ -18,7 +18,7 @@ def get_bank_account_types(session: requests.Session, type: str):
 
 
 # utils functions
-def get_bank_account_type_per_name(session: requests.Session, type: str, name: str):
+def get_bank_account_type_per_name(session: httpx.Client, type: str, name: str):
     accounts = get_bank_account_types(session, type)
     for a in accounts["result"]:
         if a["display_name"] == name:

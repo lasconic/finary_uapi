@@ -1,10 +1,10 @@
 import logging
 from .constants import API_ROOT
-import requests
+import httpx
 import json
 
 
-def get_currencies(session: requests.Session, type: str, query: str):
+def get_currencies(session: httpx.Client, type: str, query: str):
     """
     type = 'crypto' or 'fiat'
     """
@@ -23,7 +23,7 @@ def get_currencies(session: requests.Session, type: str, query: str):
 # utils functions
 
 
-def get_currency_by_code(session: requests.Session, type: str, code: str):
+def get_currency_by_code(session: httpx.Client, type: str, code: str):
     """
     type = 'crypto' or 'fiat'
     """
@@ -37,9 +37,9 @@ def get_currency_by_code(session: requests.Session, type: str, code: str):
     return {}
 
 
-def get_cryptocurrency_by_code(session: requests.Session, code: str):
+def get_cryptocurrency_by_code(session: httpx.Client, code: str):
     return get_currency_by_code(session, "crypto", code)
 
 
-def get_fiatcurrency_by_code(session: requests.Session, code: str):
+def get_fiatcurrency_by_code(session: httpx.Client, code: str):
     return get_currency_by_code(session, "fiat", code)

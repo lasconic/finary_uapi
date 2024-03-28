@@ -1,6 +1,6 @@
 import json
 import logging
-import requests
+import httpx
 from typing import Dict, Union
 
 from .constants import API_ROOT
@@ -9,7 +9,7 @@ from .utils import get_and_print
 portfolio_api = f"{API_ROOT}/users/me/portfolio"
 
 
-def get_portfolio(session: requests.Session, portfolio_type: str):
+def get_portfolio(session: httpx.Client, portfolio_type: str):
     """
     portfolio_type is "investments", "cryptos", "crowdlendings"
     """
@@ -17,27 +17,27 @@ def get_portfolio(session: requests.Session, portfolio_type: str):
     return get_and_print(session, url)
 
 
-def get_portfolio_crowdlendings(session: requests.Session):
+def get_portfolio_crowdlendings(session: httpx.Client):
     return get_portfolio(session, "crowdlendings")
 
 
-def get_portfolio_crowdlendings_distribution(session: requests.Session):
+def get_portfolio_crowdlendings_distribution(session: httpx.Client):
     return get_portfolio_distribution(session, "crowdlendings", "account")
 
 
-def get_portfolio_cryptos(session: requests.Session):
+def get_portfolio_cryptos(session: httpx.Client):
     return get_portfolio(session, "cryptos")
 
 
-def get_portfolio_cryptos_distribution(session: requests.Session):
+def get_portfolio_cryptos_distribution(session: httpx.Client):
     return get_portfolio_distribution(session, "cryptos", "crypto")
 
 
-def get_portfolio_investments(session: requests.Session):
+def get_portfolio_investments(session: httpx.Client):
     return get_portfolio(session, "investments")
 
 
-def get_portfolio_timeseries(session: requests.Session, period: str, type: str):
+def get_portfolio_timeseries(session: httpx.Client, period: str, type: str):
     """
     `period` can be "all", "1w", "1m", "ytd", "1y". If not specified, Finary will use "all"
     `type` can be "gross", "net", "finary" (aka financial)
@@ -53,9 +53,7 @@ def get_portfolio_timeseries(session: requests.Session, period: str, type: str):
     return x.json()
 
 
-def get_portfolio_distribution(
-    session: requests.Session, portfolio_type: str, type: str
-):
+def get_portfolio_distribution(session: httpx.Client, portfolio_type: str, type: str):
     """
     `portfolio_type` is "investments", "cryptos" or "crowdlendings"
     `type` is "crypto" or "stock" or "sector" or "account" (all ?)
@@ -69,14 +67,14 @@ def get_portfolio_distribution(
     return x.json()
 
 
-def get_portfolio_investments_dividends(session: requests.Session):
+def get_portfolio_investments_dividends(session: httpx.Client):
     portfolio_type = "investments"
     url = f"{portfolio_api}/{portfolio_type}/dividends"
     return get_and_print(session, url)
 
 
 def get_portfolio_transactions(
-    session: requests.Session,
+    session: httpx.Client,
     portfolio_type: str = "checking_accounts",
     page: int = 1,
     per_page: int = 50,
@@ -102,7 +100,7 @@ def get_portfolio_transactions(
 
 
 def get_portfolio_checking_accounts_transactions(
-    session: requests.Session,
+    session: httpx.Client,
     page: int = 1,
     per_page: int = 50,
     query: str = "",
@@ -116,7 +114,7 @@ def get_portfolio_checking_accounts_transactions(
 
 
 def get_portfolio_credit_accounts_transactions(
-    session: requests.Session,
+    session: httpx.Client,
     page: int = 1,
     per_page: int = 50,
     query: str = "",
@@ -130,7 +128,7 @@ def get_portfolio_credit_accounts_transactions(
 
 
 def get_portfolio_investments_transactions(
-    session: requests.Session,
+    session: httpx.Client,
     page: int = 1,
     per_page: int = 50,
     query: str = "",

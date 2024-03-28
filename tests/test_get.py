@@ -1,5 +1,5 @@
 import pytest
-import requests
+import httpx
 from importlib import import_module
 from finary_uapi.signin import signin
 from finary_uapi.auth import prepare_session
@@ -14,7 +14,7 @@ def test_signin() -> None:
 
 
 @pytest.fixture
-def session() -> requests.Session:
+def session() -> httpx.Client:
     return prepare_session()
 
 
@@ -65,7 +65,7 @@ def session() -> requests.Session:
     ],
 )
 def test_generic_test(
-    session: requests.Session,
+    session: httpx.Client,
     module_name: str,
     function_name: str,
     args,
@@ -83,7 +83,7 @@ def test_generic_test(
         assert len(result["result"]) > 0
 
 
-def test_get_security_error(session: requests.Session) -> None:
+def test_get_security_error(session: httpx.Client) -> None:
     securities = get_securities(session, "US5949181045XDE")
     assert securities
     assert securities["result"] == []

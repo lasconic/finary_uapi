@@ -1,10 +1,10 @@
 import logging
-import requests
+import httpx
 import json
 from .constants import API_ROOT
 
 
-def get_scpis(session: requests.Session, query: str):
+def get_scpis(session: httpx.Client, query: str):
     """
     This function will get a list of scpis to be added,
     and not the user scpis, see user_scpis for the scpis owned by the user
