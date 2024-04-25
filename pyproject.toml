@@ -16,7 +16,7 @@ requests = "^2.30.0"
 [tool.poetry.group.dev.dependencies]
 black = "24.3.0"
 flake8 = "7.0.0"
-mypy = "1.9.0"
+mypy = "1.10.0"
 pdoc3 = "0.10.0"
 pydocstyle = "6.3.0"
 pytest = "8.1.1"
