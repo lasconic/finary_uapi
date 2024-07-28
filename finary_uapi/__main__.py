@@ -57,6 +57,7 @@ Usage:
     finary_uapi watches search QUERY
     finary_uapi import crowdlending_csv FILENAME [-d] [-f]
     finary_uapi import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_uapi import nexo FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
     finary_uapi import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
@@ -87,6 +88,7 @@ from .user_holdings_accounts import (
 )
 from .importers.crowdlending_generic_csv import import_crowdlending_generic_csv
 from .importers.cryptocom import import_cc_csv
+from .importers.nexo import import_nexo_csv
 from .importers.crypto_generic_csv import import_crypto_generic_csv
 from .importers.stocks_generic_csv import import_stocks_generic_csv
 from .institutions import get_institutions
@@ -377,6 +379,8 @@ def main() -> int:  # pragma: nocover
                 to_be_imported = import_crowdlending_generic_csv(args["FILENAME"])
             elif args["cryptocom"]:
                 to_be_imported = import_cc_csv(args["FILENAME"])
+            elif args["nexo"]:
+                to_be_imported = import_nexo_csv(args["FILENAME"] or "nexo_transactions.csv")
             elif args["crypto_csv"]:
                 to_be_imported = import_crypto_generic_csv(args["FILENAME"])
             elif args["stocks_csv"]:
@@ -386,7 +390,7 @@ def main() -> int:  # pragma: nocover
                     to_be_imported = json.loads(input_file.read())
 
             if to_be_imported:
-                if args["cryptocom"] or args["crypto_csv"]:
+                if args["cryptocom"] or args["nexo"] or args["crypto_csv"]:
                     if args["--new"]:
                         account = add_holdings_account(session, args["--new"], "crypto")
                         for crypto_code in to_be_imported:

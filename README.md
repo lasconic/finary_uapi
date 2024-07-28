@@ -68,6 +68,7 @@ Usage:
     finary_uapi securities add <code> <quantity> <price> <account_id>
     finary_uapi securities delete <security_id>
     finary_uapi import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_uapi import nexo FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
