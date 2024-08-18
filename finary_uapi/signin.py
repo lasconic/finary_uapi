@@ -1,3 +1,4 @@
+import logging
 import http.cookiejar
 import json
 import os
@@ -40,10 +41,12 @@ def signin(otp_code: str = "") -> Any:
         "Referer": APP_ROOT,
         "User-Agent": "finary_uapi 0.2.0",
     }
+    logging.debug(f"Signing in with {credentials['identifier']}")
     x = session.post(signin_url, data=credentials, headers=headers)
     if x.status_code == 200:
         xjson = x.json()
         if xjson["response"]["status"] == "needs_second_factor":
+            logging.debug("Sending OTP code")
             sia = xjson["response"]["id"]
             second_factor_ulr = (
                 f"{CLERK_ROOT}/v1/client/sign_ins/{sia}/attempt_second_factor"
@@ -60,5 +63,6 @@ def signin(otp_code: str = "") -> Any:
             with open(JWT_FILENAME, "w") as json_file:
                 json.dump(data, json_file)
             cookie_jar_file.save()
+            logging.debug("Sign in successful!")
 
     return x.json()
