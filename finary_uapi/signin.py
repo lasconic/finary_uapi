@@ -34,7 +34,12 @@ def signin(otp_code: str = "") -> Any:
     session = requests.Session()
     cookie_jar_file = http.cookiejar.MozillaCookieJar(COOKIE_FILENAME)
     session.cookies = cookie_jar_file  # type: ignore
-    headers = {"Origin": f"{APP_ROOT}", "Referer": f"{APP_ROOT}"}
+    headers = {
+        "Accept-Encoding": "identity",
+        "Origin": APP_ROOT,
+        "Referer": APP_ROOT,
+        "User-Agent": "finary_uapi 0.2.0",
+    }
     x = session.post(signin_url, data=credentials, headers=headers)
     if x.status_code == 200:
         xjson = x.json()
