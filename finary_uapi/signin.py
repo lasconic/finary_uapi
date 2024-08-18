@@ -46,6 +46,8 @@ def signin(otp_code: str = "") -> Any:
     if x.status_code == 200:
         xjson = x.json()
         if xjson["response"]["status"] == "needs_second_factor":
+            if not otp_code:
+                raise RuntimeError("OTP code is required and has not been provided")
             logging.debug("Sending OTP code")
             sia = xjson["response"]["id"]
             second_factor_ulr = (
