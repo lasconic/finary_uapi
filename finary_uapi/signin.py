@@ -57,6 +57,10 @@ def signin(otp_code: str = "") -> Any:
             x = session.post(second_factor_ulr, data=data, headers=headers)
             xjson = x.json()  # replace response
 
+        if errors := xjson.get("errors", None):
+            messages = ", ".join([error["long_message"] for error in errors])
+            raise RuntimeError(f"Login failed: {messages}")
+
         if xjson["response"]["status"] == "complete":
             clerk_session = xjson["client"]["sessions"][0]
             session_id = clerk_session["id"]
