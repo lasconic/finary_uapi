@@ -1,3 +1,4 @@
+import logging
 import http.cookiejar
 import json
 import os
@@ -34,11 +35,20 @@ def signin(otp_code: str = "") -> Any:
     session = requests.Session()
     cookie_jar_file = http.cookiejar.MozillaCookieJar(COOKIE_FILENAME)
     session.cookies = cookie_jar_file  # type: ignore
-    headers = {"Origin": f"{APP_ROOT}", "Referer": f"{APP_ROOT}"}
+    headers = {
+        "Accept-Encoding": "identity",
+        "Origin": APP_ROOT,
+        "Referer": APP_ROOT,
+        "User-Agent": "finary_uapi 0.2.0",
+    }
+    logging.debug(f"Signing in with {credentials['identifier']}")
     x = session.post(signin_url, data=credentials, headers=headers)
     if x.status_code == 200:
         xjson = x.json()
         if xjson["response"]["status"] == "needs_second_factor":
+            if not otp_code:
+                raise RuntimeError("OTP code is required and has not been provided")
+            logging.debug("Sending OTP code")
             sia = xjson["response"]["id"]
             second_factor_ulr = (
                 f"{CLERK_ROOT}/v1/client/sign_ins/{sia}/attempt_second_factor"
@@ -46,6 +56,10 @@ def signin(otp_code: str = "") -> Any:
             data = {"strategy": "totp", "code": otp_code}
             x = session.post(second_factor_ulr, data=data, headers=headers)
             xjson = x.json()  # replace response
+
+        if errors := xjson.get("errors", None):
+            messages = ", ".join([error["long_message"] for error in errors])
+            raise RuntimeError(f"Login failed: {messages}")
 
         if xjson["response"]["status"] == "complete":
             clerk_session = xjson["client"]["sessions"][0]
@@ -55,5 +69,6 @@ def signin(otp_code: str = "") -> Any:
             with open(JWT_FILENAME, "w") as json_file:
                 json.dump(data, json_file)
             cookie_jar_file.save()
+            logging.debug("Sign in successful!")
 
     return x.json()
