@@ -4,6 +4,7 @@ from typing import Dict
 
 CryptoLines = Dict[str, Dict[str, float]]
 
+
 def add_quantity(
     results: CryptoLines, currency: str, amount: float, price: float
 ) -> None:
@@ -43,8 +44,12 @@ def import_nexo_csv(filename: str, diff_stacked: bool = False):
             currency_price = float(fields[3])
             if input_currency == "EURX":
                 price = -currency_price
-            logging.debug(f'exchanged {amount} {currency} for {currency_price} {input_currency}')
-            add_quantity(results, input_currency, currency_price, 0) # We substract the other currency
+            logging.debug(
+                f"exchanged {amount} {currency} for {currency_price} {input_currency}"
+            )
+            add_quantity(
+                results, input_currency, currency_price, 0
+            )  # We substract the other currency
         elif type in [
             "Cashback",
             "Exchange Cashback",
@@ -52,9 +57,9 @@ def import_nexo_csv(filename: str, diff_stacked: bool = False):
             "Referral Bonus",
             "Fixed Term Interest",
             "Interest",
-            "Deposit To Exchange"
+            "Deposit To Exchange",
         ]:
-            price = 0 # Nothing to change, just add it
+            price = 0  # Nothing to change, just add it
         elif type in ["Withdrawal"]:
             amount = -amount
         elif type in ["Exchange To Withdraw", "Credit Card Fiatx Exchange To Withdraw"]:
@@ -81,7 +86,7 @@ def import_nexo_csv(filename: str, diff_stacked: bool = False):
         if k == "EURX":
             results["EURS"] = results[k]
             del results[k]
-            logging.info(f"EURX is not supported by Finary and was changed to EURS")
+            logging.info("EURX is not supported by Finary and was changed to EURS")
     logging.info(f"Total invested : {total}")
     print(sorted(op_type))
     return results

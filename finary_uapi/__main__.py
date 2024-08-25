@@ -380,7 +380,9 @@ def main() -> int:  # pragma: nocover
             elif args["cryptocom"]:
                 to_be_imported = import_cc_csv(args["FILENAME"])
             elif args["nexo"]:
-                to_be_imported = import_nexo_csv(args["FILENAME"] or "nexo_transactions.csv")
+                to_be_imported = import_nexo_csv(
+                    args["FILENAME"] or "nexo_transactions.csv"
+                )
             elif args["crypto_csv"]:
                 to_be_imported = import_crypto_generic_csv(args["FILENAME"])
             elif args["stocks_csv"]:
