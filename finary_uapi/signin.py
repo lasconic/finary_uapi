@@ -11,6 +11,7 @@ from .constants import (
     CREDENTIAL_FILE,
     JWT_FILENAME,
 )
+from . import __version__
 
 
 def signin(otp_code: str = "") -> Any:
@@ -39,7 +40,7 @@ def signin(otp_code: str = "") -> Any:
         "Accept-Encoding": "identity",
         "Origin": APP_ROOT,
         "Referer": APP_ROOT,
-        "User-Agent": "finary_uapi 0.2.0",
+        "User-Agent": f"finary_uapi {__version__}",
     }
     logging.debug(f"Signing in with {credentials['identifier']}")
     x = session.post(signin_url, data=credentials, headers=headers)
