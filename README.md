@@ -124,7 +124,7 @@ python -m finary_uapi dashboard gross all | jq '.result["total"]["amount"]'
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -138,6 +138,7 @@ Thanks go to these people ([emoji key](https://allcontributors.org/docs/en/emoji
       <td align="center" valign="top" width="16.66%"><a href="http://lasconic.com"><img src="https://avatars.githubusercontent.com/u/234271?v=4?s=100" width="100px;" alt="Nicolas Froment"/><br /><sub><b>Nicolas Froment</b></sub></a><br /><a href="#projectManagement-lasconic" title="Project Management">📆</a> <a href="#promotion-lasconic" title="Promotion">📣</a> <a href="https://github.com/lasconic/finary_uapi/commits?author=lasconic" title="Code">💻</a> <a href="https://github.com/lasconic/finary_uapi/issues?q=author%3Alasconic" title="Bug reports">🐛</a> <a href="#ideas-lasconic" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/lasconic/finary_uapi/commits?author=lasconic" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="16.66%"><a href="http://varal7.fr"><img src="https://avatars.githubusercontent.com/u/8019486?v=4?s=100" width="100px;" alt="Victor Quach"/><br /><sub><b>Victor Quach</b></sub></a><br /><a href="https://github.com/lasconic/finary_uapi/commits?author=Varal7" title="Code">💻</a></td>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/nmathey"><img src="https://avatars.githubusercontent.com/u/20896232?v=4?s=100" width="100px;" alt="NickFR"/><br /><sub><b>NickFR</b></sub></a><br /><a href="https://github.com/lasconic/finary_uapi/commits?author=nmathey" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/OxyFlax"><img src="https://avatars.githubusercontent.com/u/14943003?v=4?s=100" width="100px;" alt="OxyFlax"/><br /><sub><b>OxyFlax</b></sub></a><br /><a href="https://github.com/lasconic/finary_uapi/commits?author=OxyFlax" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
