@@ -6,12 +6,12 @@ Usage:
     finary_uapi institution_connections
     finary_uapi organizations
     finary_uapi timeseries <period> <type>
-    finary_uapi checking_accounts transactions
+    finary_uapi checking_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
     finary_uapi fonds_euro
     finary_uapi startups
     finary_uapi investments
     finary_uapi investments dividends
-    finary_uapi investments transactions
+    finary_uapi investments transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
     finary_uapi crowdlendings
     finary_uapi crowdlendings distribution
     finary_uapi crowdlendings add <account_name> <name> <annual_yield> <month_duration> <initial_investment> <current_price> <currency_code> <start_date>
@@ -45,7 +45,7 @@ Usage:
     finary_uapi securities delete <security_id>
     finary_uapi insights
     finary_uapi loans
-    finary_uapi credit_accounts transactions
+    finary_uapi credit_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
     finary_uapi real_estates
     finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> [<currency_code>]
     finary_uapi real_estates add <category> <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> [<currency_code>]
@@ -64,9 +64,16 @@ Usage:
 
 
 Options:
-  --new=NAME          Create a new account and import the lines
-  --edit=account_id   Edit the line with new value if it exists, create it otherwise
-  --add=account_id    If line exists, add the quantity and change the price accordingly, create it otherwise
+  --new=NAME                        Create a new account and import the lines
+  --edit=account_id                 Edit the line with new value if it exists, create it otherwise
+  --add=account_id                  If line exists, add the quantity and change the price accordingly, create it otherwise
+  --page=<page>                     First page [default: 1].
+  --perpage=<perpage>               Elements per page [default: 50].
+  --account=<account_ids>           Account ids, comma separated if necessary
+  --institution=<institution_ids>   Institutions (banks) ids, comma separated if necessary
+  --query=<query>                   Full text search
+
+
 """  # noqa
 
 import json
@@ -167,7 +174,14 @@ def main() -> int:  # pragma: nocover
             result = get_user_me_institution_connections(session)
         elif args["checking_accounts"]:
             if args["transactions"]:
-                result = get_portfolio_checking_accounts_transactions(session)
+                result = get_portfolio_checking_accounts_transactions(
+                    session,
+                    page=args["--page"],
+                    per_page=args["--perpage"],
+                    account_id=args["--account"],
+                    institution_id=args["--institution"],
+                    query=args["--query"],
+                )
         elif args["fonds_euro"]:
             result = get_user_fonds_euro(session)
         elif args["startups"]:
@@ -339,7 +353,14 @@ def main() -> int:  # pragma: nocover
             if args["dividends"]:
                 result = get_portfolio_investments_dividends(session)
             elif args["transactions"]:
-                result = get_portfolio_investments_transactions(session)
+                result = get_portfolio_investments_transactions(
+                    session,
+                    page=args["--page"],
+                    per_page=args["--perpage"],
+                    account_id=args["--account"],
+                    institution_id=args["--institution"],
+                    query=args["--query"],
+                )
             else:
                 result = get_portfolio_investments(session)
         elif args["timeseries"]:
@@ -368,7 +389,14 @@ def main() -> int:  # pragma: nocover
             result = get_loans(session)
         elif args["credit_accounts"]:
             if args["transactions"]:
-                result = get_portfolio_credit_accounts_transactions(session)
+                result = get_portfolio_credit_accounts_transactions(
+                    session,
+                    page=args["--page"],
+                    per_page=args["--perpage"],
+                    account_id=args["--account"],
+                    institution_id=args["--institution"],
+                    query=args["--query"],
+                )
         elif args["real_estates"]:
             result = get_user_real_estates(session)
         elif args["scpis"]:

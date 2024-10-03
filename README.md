@@ -27,22 +27,23 @@ Run ``python -m finary_uapi` for an up to date version.
 
 ```
 Usage:
-    finary_uapi signin
+    finary_uapi signin [MFA_CODE]
     finary_uapi me
     finary_uapi institution_connections
-    finary_uapi dashboard net [all | 1w | 1m | ytd | 1y]
-    finary_uapi dashboard gross [all | 1w | 1m | ytd | 1y]
-    finary_uapi dashboard finary [all | 1w | 1m | ytd | 1y]
-    finary_uapi portfolio [all | 1w | 1m | ytd | 1y]
-    finary_uapi commodities [all | 1w | 1m | ytd | 1y]
-    finary_uapi checking_accounts [all | 1w | 1m | ytd | 1y]
-    finary_uapi fonds_euro [all | 1w | 1m | ytd | 1y]
-    finary_uapi other_assets [all | 1w | 1m | ytd | 1y]
-    finary_uapi saving_accounts [all | 1w | 1m | ytd | 1y]
-    finary_uapi real_estates [all | 1w | 1m | ytd | 1y]
+    finary_uapi organizations
+    finary_uapi timeseries <period> <type>
+    finary_uapi checking_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
+    finary_uapi fonds_euro
     finary_uapi startups
     finary_uapi investments
+    finary_uapi investments dividends
+    finary_uapi investments transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
+    finary_uapi crowdlendings
+    finary_uapi crowdlendings distribution
+    finary_uapi crowdlendings add <account_name> <name> <annual_yield> <month_duration> <initial_investment> <current_price> <currency_code> <start_date>
+    finary_uapi crowdlendings delete <crowdlending_id>
     finary_uapi cryptos
+    finary_uapi cryptos distribution
     finary_uapi cryptos add <code> <quantity> <price> <account_id>
     finary_uapi cryptos update <code> <quantity> <price> <account_id>
     finary_uapi cryptos delete <code> <account_id>
@@ -50,8 +51,8 @@ Usage:
     finary_uapi precious_metals
     finary_uapi precious_metals add <name> <quantity> <price>
     finary_uapi precious_metals delete <commodity_id>
-    finary_uapi holdings_accounts [crypto | stocks | <account_name>]
-    finary_uapi holdings_accounts add (crypto | stocks) <account_name>
+    finary_uapi holdings_accounts [crypto | stocks | crowdlending | <account_name>]
+    finary_uapi holdings_accounts add (crypto | stocks | crowdlending) <account_name>
     finary_uapi holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
     finary_uapi holdings_accounts delete <account_id>
     finary_uapi holdings_accounts update <account_id> <account_name> [<account_balance>]
@@ -60,6 +61,7 @@ Usage:
     finary_uapi generic_assets add <name> <category> <quantity> <buying_price> <current_price>
     finary_uapi generic_assets update <asset_id> <name> <category> <quantity> <buying_price> <current_price>
     finary_uapi generic_assets delete <asset_id>
+    finary_uapi crypto_chains
     finary_uapi crypto_currency search QUERY
     finary_uapi fiat_currency search QUERY
     finary_uapi institutions search QUERY
@@ -67,11 +69,24 @@ Usage:
     finary_uapi securities
     finary_uapi securities add <code> <quantity> <price> <account_id>
     finary_uapi securities delete <security_id>
+    finary_uapi insights
+    finary_uapi loans
+    finary_uapi credit_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
+    finary_uapi real_estates
+    finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> [<currency_code>]
+    finary_uapi real_estates add <category> <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> [<currency_code>]
+    finary_uapi real_estates update rent <asset_id> <user_estimated_value> <description> <buying_price> <ownership_percentage> <monthly_rent>
+    finary_uapi real_estates update <category> <asset_id> <user_estimated_value> <description> <buying_price> <ownership_percentage>
+    finary_uapi real_estates delete <asset_id>
+    finary_uapi scpis search QUERY
+    finary_uapi scpis
+    finary_uapi watches search QUERY
+    finary_uapi import crowdlending_csv FILENAME [-d] [-f]
     finary_uapi import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import nexo FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
-    finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
-    finary_uapi import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
+    finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
+    finary_uapi import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
 ```
 
 ## Examples
