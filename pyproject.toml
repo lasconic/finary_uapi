@@ -14,7 +14,7 @@ fuzzywuzzy = {version = "^0.18.0", extras = ["speedup"]}
 requests = "^2.32.3"
 
 [tool.poetry.group.dev.dependencies]
-black = "24.8.0"
+black = "24.10.0"
 flake8 = "7.1.1"
 mypy = "1.11.2"
 pdoc3 = "0.11.1"
