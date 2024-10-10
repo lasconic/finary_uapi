@@ -83,10 +83,27 @@ def get_portfolio_transactions(
     query: str = "",
     account_id: str = "",
     institution_id: str = "",
+    start_date: str = "",
+    end_date: str = "",
+    marked: str = "",
 ):
     """
     `portfolio_type` is  "investments", "checking_accounts", "credit_accounts"
+    `start_date` and `end_date` should be in YYYY-MM-DD format
+    `marked` can be "true" or "false"
     """
+    if page == "-1":
+        return get_portfolio_unpaged_transactions(
+            session,
+            portfolio_type=portfolio_type,
+            per_page=per_page,
+            query=query,
+            account_id=account_id,
+            institution_id=institution_id,
+            start_date=start_date,
+            end_date=end_date,
+            marked=marked,
+        )
     url = f"{portfolio_api}/{portfolio_type}/transactions"
     params: Dict[str, Union[str, int]] = {}
     params["page"] = page
@@ -97,6 +114,12 @@ def get_portfolio_transactions(
         params["account_id"] = account_id
     if institution_id:
         params["institution_id"] = institution_id
+    if start_date:
+        params["start_date"] = start_date
+    if end_date:
+        params["end_date"] = end_date
+    if marked:
+        params["marked"] = marked
     x = session.get(url, params=params)
     return x.json()
 
@@ -108,10 +131,22 @@ def get_portfolio_checking_accounts_transactions(
     query: str = "",
     account_id: str = "",
     institution_id: str = "",
+    start_date: str = "",
+    end_date: str = "",
+    marked: str = "",
 ):
     portfolio_type = "checking_accounts"
     return get_portfolio_transactions(
-        session, portfolio_type, page, per_page, query, account_id, institution_id
+        session,
+        portfolio_type,
+        page,
+        per_page,
+        query,
+        account_id,
+        institution_id,
+        start_date,
+        end_date,
+        marked,
     )
 
 
@@ -122,10 +157,22 @@ def get_portfolio_credit_accounts_transactions(
     query: str = "",
     account_id: str = "",
     institution_id: str = "",
+    start_date: str = "",
+    end_date: str = "",
+    marked: str = "",
 ):
     portfolio_type = "credit_accounts"
     return get_portfolio_transactions(
-        session, portfolio_type, page, per_page, query, account_id, institution_id
+        session,
+        portfolio_type,
+        page,
+        per_page,
+        query,
+        account_id,
+        institution_id,
+        start_date,
+        end_date,
+        marked,
     )
 
 
@@ -136,8 +183,78 @@ def get_portfolio_investments_transactions(
     query: str = "",
     account_id: str = "",
     institution_id: str = "",
+    start_date: str = "",
+    end_date: str = "",
+    marked: str = "",
 ):
     portfolio_type = "investments"
     return get_portfolio_transactions(
-        session, portfolio_type, page, per_page, query, account_id, institution_id
+        session,
+        portfolio_type,
+        page,
+        per_page,
+        query,
+        account_id,
+        institution_id,
+        start_date,
+        end_date,
+        marked,
     )
+
+
+def get_portfolio_unpaged_transactions(
+    session: requests.Session,
+    portfolio_type: str = "checking_accounts",
+    per_page=50,
+    query: str = "",
+    account_id: str = "",
+    institution_id: str = "",
+    start_date: str = "",
+    end_date: str = "",
+    marked: str = "",
+):
+    """
+    Retrieves all transactions for a given portfolio type without pagination.
+
+    This function calls get_portfolio_transactions multiple times, incrementing the page
+    number until there are no more results. It then extends the "result" array of the first response.
+    """
+    page = 1
+
+    first_response = get_portfolio_transactions(
+        session,
+        portfolio_type,
+        page,
+        per_page,
+        query,
+        account_id,
+        institution_id,
+        start_date,
+        end_date,
+        marked,
+    )
+
+    if "result" not in first_response:
+        return first_response
+
+    while True:
+        page += 1
+        next_response = get_portfolio_transactions(
+            session,
+            portfolio_type,
+            page,
+            per_page,
+            query,
+            account_id,
+            institution_id,
+            start_date,
+            end_date,
+            marked,
+        )
+
+        if "result" not in next_response or not next_response["result"]:
+            break
+
+        first_response["result"].extend(next_response["result"])
+
+    return first_response

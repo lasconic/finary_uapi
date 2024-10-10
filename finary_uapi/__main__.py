@@ -6,12 +6,12 @@ Usage:
     finary_uapi institution_connections
     finary_uapi organizations
     finary_uapi timeseries <period> <type>
-    finary_uapi checking_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
+    finary_uapi checking_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
     finary_uapi fonds_euro
     finary_uapi startups
     finary_uapi investments
     finary_uapi investments dividends
-    finary_uapi investments transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
+    finary_uapi investments transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
     finary_uapi crowdlendings
     finary_uapi crowdlendings distribution
     finary_uapi crowdlendings add <account_name> <name> <annual_yield> <month_duration> <initial_investment> <current_price> <currency_code> <start_date>
@@ -45,7 +45,7 @@ Usage:
     finary_uapi securities delete <security_id>
     finary_uapi insights
     finary_uapi loans
-    finary_uapi credit_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>]
+    finary_uapi credit_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
     finary_uapi real_estates
     finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> [<currency_code>]
     finary_uapi real_estates add <category> <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> [<currency_code>]
@@ -72,6 +72,9 @@ Options:
   --account=<account_ids>           Account ids, comma separated if necessary
   --institution=<institution_ids>   Institutions (banks) ids, comma separated if necessary
   --query=<query>                   Full text search
+  --start-date=<start_date>         Start date for transactions (format: YYYY-MM-DD)
+  --end-date=<end_date>             End date for transactions (format: YYYY-MM-DD)
+  --marked=<marked>                 Filter marked transactions (true or false)
 
 
 """  # noqa
@@ -181,6 +184,9 @@ def main() -> int:  # pragma: nocover
                     account_id=args["--account"],
                     institution_id=args["--institution"],
                     query=args["--query"],
+                    start_date=args["--start-date"],
+                    end_date=args["--end-date"],
+                    marked=args["--marked"],
                 )
         elif args["fonds_euro"]:
             result = get_user_fonds_euro(session)
@@ -360,6 +366,9 @@ def main() -> int:  # pragma: nocover
                     account_id=args["--account"],
                     institution_id=args["--institution"],
                     query=args["--query"],
+                    start_date=args["--start-date"],
+                    end_date=args["--end-date"],
+                    marked=args["--marked"],
                 )
             else:
                 result = get_portfolio_investments(session)
@@ -396,6 +405,9 @@ def main() -> int:  # pragma: nocover
                     account_id=args["--account"],
                     institution_id=args["--institution"],
                     query=args["--query"],
+                    start_date=args["--start-date"],
+                    end_date=args["--end-date"],
+                    marked=args["--marked"],
                 )
         elif args["real_estates"]:
             result = get_user_real_estates(session)
