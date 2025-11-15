@@ -1,5 +1,5 @@
 import pytest
-import requests
+from curl_cffi import requests
 from finary_uapi.bank_account_types import get_bank_account_type_per_name
 from finary_uapi.currencies import get_cryptocurrency_by_code, get_fiatcurrency_by_code
 from finary_uapi.signin import signin

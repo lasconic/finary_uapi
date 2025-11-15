@@ -1,4 +1,4 @@
-import requests
+from curl_cffi import requests
 from .constants import API_ROOT
 from .utils import get_and_print
 from .real_estates import get_real_estates_placeid

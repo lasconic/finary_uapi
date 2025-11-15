@@ -1,6 +1,6 @@
 import http.cookiejar
 import json
-import requests
+from curl_cffi import requests
 from .constants import APP_ROOT, CLERK_ROOT, COOKIE_FILENAME, JWT_FILENAME
 
 

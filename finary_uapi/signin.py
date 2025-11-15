@@ -2,8 +2,9 @@ import logging
 import http.cookiejar
 import json
 import os
+import time
 from typing import Any
-import requests
+from curl_cffi import requests
 from .constants import (
     APP_ROOT,
     CLERK_ROOT,
@@ -43,19 +44,20 @@ def signin(otp_code: str = "") -> Any:
         "User-Agent": f"finary_uapi {__version__}",
     }
     logging.debug(f"Signing in with {credentials['identifier']}")
-    x = session.post(signin_url, data=credentials, headers=headers)
+    x = session.post(signin_url, data=credentials, headers=headers, impersonate="chrome110")
     if x.status_code == 200:
         xjson = x.json()
         if xjson["response"]["status"] == "needs_second_factor":
             if not otp_code:
                 raise RuntimeError("OTP code is required and has not been provided")
+            time.sleep(0.5)  # Human-like delay
             logging.debug("Sending OTP code")
             sia = xjson["response"]["id"]
             second_factor_ulr = (
                 f"{CLERK_ROOT}/v1/client/sign_ins/{sia}/attempt_second_factor"
             )
             data = {"strategy": "totp", "code": otp_code}
-            x = session.post(second_factor_ulr, data=data, headers=headers)
+            x = session.post(second_factor_ulr, data=data, headers=headers, impersonate="chrome110")
             xjson = x.json()  # replace response
 
         if errors := xjson.get("errors", None):
