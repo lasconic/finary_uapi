@@ -43,7 +43,6 @@ Usage:
     finary_uapi securities
     finary_uapi securities add <code> <quantity> <price> <account_id>
     finary_uapi securities delete <security_id>
-    finary_uapi loans
     finary_uapi credit_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
     finary_uapi real_estates
     finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> [<currency_code>]
