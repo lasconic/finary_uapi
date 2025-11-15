@@ -66,7 +66,6 @@ def add_user_crowdlending(
     data["name"] = name
     data["start_date"] = start_date
     data_json = json.dumps(data)
-    # print(data_json)
     headers = {}
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"

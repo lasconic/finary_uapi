@@ -43,7 +43,6 @@ Usage:
     finary_uapi securities
     finary_uapi securities add <code> <quantity> <price> <account_id>
     finary_uapi securities delete <security_id>
-    finary_uapi insights
     finary_uapi loans
     finary_uapi credit_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
     finary_uapi real_estates
@@ -80,6 +79,7 @@ Options:
 """  # noqa
 
 import json
+import os
 import sys
 
 from docopt import docopt
@@ -155,7 +155,6 @@ from .user_securities import (
     get_user_securities,
     delete_user_security,
 )
-from .views import get_insights, get_loans
 from .watches import get_watches
 
 
@@ -163,7 +162,8 @@ def main() -> int:  # pragma: nocover
     """Main entry point."""
     import logging
 
-    logging.basicConfig(level=logging.INFO)
+    log_level = os.getenv("LOG_LEVEL", "INFO")
+    logging.basicConfig(level=getattr(logging, log_level))
 
     args = docopt(__doc__)
     result = ""
@@ -392,10 +392,6 @@ def main() -> int:  # pragma: nocover
             result = get_user_precious_metals(session)
         elif args["securities"]:
             result = get_user_securities(session)
-        elif args["insights"]:
-            result = get_insights(session)
-        elif args["loans"]:
-            result = get_loans(session)
         elif args["credit_accounts"]:
             if args["transactions"]:
                 result = get_portfolio_credit_accounts_transactions(

@@ -44,7 +44,9 @@ def signin(otp_code: str = "") -> Any:
         "User-Agent": f"finary_uapi {__version__}",
     }
     logging.debug(f"Signing in with {credentials['identifier']}")
-    x = session.post(signin_url, data=credentials, headers=headers, impersonate="chrome110")
+    x = session.post(
+        signin_url, data=credentials, headers=headers, impersonate="chrome110"
+    )
     if x.status_code == 200:
         xjson = x.json()
         if xjson["response"]["status"] == "needs_second_factor":
@@ -57,7 +59,9 @@ def signin(otp_code: str = "") -> Any:
                 f"{CLERK_ROOT}/v1/client/sign_ins/{sia}/attempt_second_factor"
             )
             data = {"strategy": "totp", "code": otp_code}
-            x = session.post(second_factor_ulr, data=data, headers=headers, impersonate="chrome110")
+            x = session.post(
+                second_factor_ulr, data=data, headers=headers, impersonate="chrome110"
+            )
             xjson = x.json()  # replace response
 
         if errors := xjson.get("errors", None):

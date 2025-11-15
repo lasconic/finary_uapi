@@ -34,5 +34,6 @@ def prepare_session() -> requests.Session:
 
     s.cookies = saved_cookie
     s.headers.update({"authorization": f"Bearer {session_token}"})
+    s.impersonate = "chrome110"
 
     return s

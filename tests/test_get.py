@@ -59,8 +59,6 @@ def session() -> requests.Session:
         ("user_scpis", "", {}, 1),
         ("user_securities", "", {}, 1),
         ("user_startups", "", {}, 1),
-        ("views", "get_insights", {}, 1),
-        ("views", "get_loans", {}, 1),
         ("watches", "", {"query": "rolex"}, 1),
     ],
 )

@@ -53,7 +53,6 @@ def get_holdings_accounts(session: requests.Session, type: str = ""):
     if type:
         params["manual_type"] = type
     x = session.get(url, params=params)
-    print(x.text)
     logging.debug(json.dumps(x.json(), indent=4))
     return x.json()
 
