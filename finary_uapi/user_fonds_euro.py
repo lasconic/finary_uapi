@@ -1,5 +1,5 @@
 from .constants import API_ROOT
-import requests
+from curl_cffi import requests
 from .utils import get_and_print
 
 fe_url = f"{API_ROOT}/users/me/fonds_euro"

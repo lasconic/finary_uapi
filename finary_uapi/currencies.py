@@ -1,6 +1,6 @@
 import logging
 from .constants import API_ROOT
-import requests
+from curl_cffi import requests
 import json
 
 

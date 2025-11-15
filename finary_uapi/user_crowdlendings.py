@@ -1,7 +1,7 @@
 import json
 import logging
 from typing import Dict, Union
-import requests
+from curl_cffi import requests
 from .constants import API_ROOT
 from .user_holdings_accounts import (
     get_holdings_account_per_name_or_id,

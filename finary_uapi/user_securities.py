@@ -1,6 +1,6 @@
 import json
 import logging
-import requests
+from curl_cffi import requests
 from .constants import API_ROOT
 from .securities import get_securities, guess_security
 from .user_holdings_accounts import (
@@ -86,7 +86,7 @@ def add_user_security_by_symbol(
             buying_price,
         )
     else:
-        logging.warn("Symbol not found")
+        logging.warning("Symbol not found")
     return {}
 
 
@@ -101,7 +101,7 @@ def add_user_security_by_symbol_to_account(
             session, symbol, holdings_account_id, quantity, buying_price
         )
     else:
-        logging.warn("Account not found")
+        logging.warning("Account not found")
         return {}
 
 
@@ -122,7 +122,7 @@ def add_user_security_to_account(
             buying_price,
         )
     else:
-        logging.warn("Account not found")
+        logging.warning("Account not found")
         return {}
 
 

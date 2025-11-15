@@ -1,5 +1,5 @@
 from typing import Any
-import requests
+from curl_cffi import requests
 
 from .utils import get_and_print
 from .constants import API_ROOT

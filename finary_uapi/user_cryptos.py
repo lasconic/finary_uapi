@@ -1,6 +1,6 @@
 import json
 import logging
-import requests
+from curl_cffi import requests
 from .constants import API_ROOT
 from .currencies import get_cryptocurrency_by_code
 

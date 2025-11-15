@@ -1,6 +1,6 @@
 import json
 import logging
-import requests
+from curl_cffi import requests
 from typing import Dict, Union
 
 from .constants import API_ROOT
@@ -121,6 +121,7 @@ def get_portfolio_transactions(
     if marked:
         params["marked"] = marked
     x = session.get(url, params=params)
+    print(x)
     return x.json()
 
 
@@ -251,7 +252,8 @@ def get_portfolio_unpaged_transactions(
             end_date,
             marked,
         )
-
+        print(next_response)
+    
         if "result" not in next_response or not next_response["result"]:
             break
 

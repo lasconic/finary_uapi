@@ -1,5 +1,5 @@
 import pytest
-import requests
+from curl_cffi import requests
 from importlib import import_module
 from finary_uapi.signin import signin
 from finary_uapi.auth import prepare_session
