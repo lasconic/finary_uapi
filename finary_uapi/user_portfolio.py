@@ -121,7 +121,6 @@ def get_portfolio_transactions(
     if marked:
         params["marked"] = marked
     x = session.get(url, params=params)
-    print(x)
     return x.json()
 
 
@@ -252,8 +251,7 @@ def get_portfolio_unpaged_transactions(
             end_date,
             marked,
         )
-        print(next_response)
-    
+
         if "result" not in next_response or not next_response["result"]:
             break
 
