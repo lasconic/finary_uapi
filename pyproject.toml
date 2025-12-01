@@ -16,7 +16,7 @@ curl-cffi = "^0.13.0"
 [tool.poetry.group.dev.dependencies]
 black = "25.11.0"
 flake8 = "7.3.0"
-mypy = "1.18.2"
+mypy = "1.19.0"
 pdoc3 = "0.11.6"
 pydocstyle = "6.3.0"
 pytest = "9.0.1"
