@@ -23,7 +23,7 @@ pytest = "9.0.2"
 pytest-cov = "7.0.0"
 pytest-dependency = "0.6.0"
 responses = "0.25.8"
-types-requests = "2.32.4.20250913"
+types-requests = "2.32.4.20260107"
 
 [build-system]
 requires = ["poetry-core"]
