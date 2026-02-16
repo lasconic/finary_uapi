@@ -1045,13 +1045,13 @@ testing = ["process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
 name = "pytest-dependency"
-version = "0.6.0"
+version = "0.6.1"
 description = "Manage dependencies of tests"
 optional = false
 python-versions = ">=3.4"
 groups = ["dev"]
 files = [
-    {file = "pytest-dependency-0.6.0.tar.gz", hash = "sha256:934b0e6a39d95995062c193f7eaeed8a8ffa06ff1bcef4b62b0dc74a708bacc1"},
+    {file = "pytest_dependency-0.6.1.tar.gz", hash = "sha256:246c24d2a5fc743a942cec4408853640e56a05ba58d46e5b213a1d4b738a2464"},
 ]
 
 [package.dependencies]
@@ -1332,4 +1332,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "32a18b26b988ba2d6d6386336d5941828fee055d1cd6f8f6c07c446ac40f65ff"
+content-hash = "65a27c7a86d564b8fedf005966ead192b0939a783d619a80e69548fcd2f8a0fa"
