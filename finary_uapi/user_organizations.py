@@ -6,12 +6,18 @@ from .utils import get_and_print
 
 
 def get_organization_investments(session: requests.Session, org_id: str) -> Any:
+    """Aggregated portfolio view — result is a dict, not a list."""
     url = f"{API_ROOT}/organizations/{org_id}/portfolio/investments"
     return get_and_print(session, url)
 
 
+def get_organization_securities(session: requests.Session, org_id: str) -> Any:
+    url = f"{API_ROOT}/organizations/{org_id}/securities"
+    return get_and_print(session, url)
+
+
 def get_organization_cryptos(session: requests.Session, org_id: str) -> Any:
-    url = f"{API_ROOT}/organizations/{org_id}/portfolio/cryptos"
+    url = f"{API_ROOT}/organizations/{org_id}/cryptos"
     return get_and_print(session, url)
 
 
