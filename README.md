@@ -140,7 +140,7 @@ python -m finary_uapi dashboard gross all | jq '.result["total"]["amount"]'
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -156,6 +156,7 @@ Thanks go to these people ([emoji key](https://allcontributors.org/docs/en/emoji
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/nmathey"><img src="https://avatars.githubusercontent.com/u/20896232?v=4?s=100" width="100px;" alt="NickFR"/><br /><sub><b>NickFR</b></sub></a><br /><a href="https://github.com/lasconic/finary_uapi/commits?author=nmathey" title="Code">💻</a></td>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/clemlesne"><img src="https://avatars.githubusercontent.com/u/10001945?v=4?s=100" width="100px;" alt="Clémence Lesné"/><br /><sub><b>Clémence Lesné</b></sub></a><br /><a href="https://github.com/lasconic/finary_uapi/commits?author=clemlesne" title="Code">💻</a></td>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/OxyFlax"><img src="https://avatars.githubusercontent.com/u/14943003?v=4?s=100" width="100px;" alt="OxyFlax"/><br /><sub><b>OxyFlax</b></sub></a><br /><a href="https://github.com/lasconic/finary_uapi/commits?author=OxyFlax" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/patjlm"><img src="https://avatars.githubusercontent.com/u/9153866?v=4?s=100" width="100px;" alt="Patrick Martin"/><br /><sub><b>Patrick Martin</b></sub></a><br /><a href="https://github.com/lasconic/finary_uapi/commits?author=patjlm" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
