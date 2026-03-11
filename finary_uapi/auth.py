@@ -21,7 +21,7 @@ def prepare_session() -> requests.Session:
     saved_cookie = s.cookies
     cookie_jar_file = http.cookiejar.MozillaCookieJar(COOKIE_FILENAME)
     cookie_jar_file.load(COOKIE_FILENAME)
-    s.cookies = cookie_jar_file  # type: ignore
+    s.cookies = cookie_jar_file
 
     tokens_url = f"{CLERK_ROOT}/v1/client/sessions/{session_id}/tokens"
     headers = {"Origin": f"{APP_ROOT}", "Referer": f"{APP_ROOT}"}

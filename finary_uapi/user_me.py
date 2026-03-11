@@ -37,7 +37,7 @@ def get_family_org_id(session: requests.Session) -> str | None:
     data = get_user_me_organizations(session)
     for org in data.get("result", []):
         if org.get("organization_type") == "family":
-            return org["id"]
+            return str(org["id"])
     return None
 
 
