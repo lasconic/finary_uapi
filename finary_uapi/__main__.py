@@ -7,16 +7,16 @@ Usage:
     finary_uapi organizations
     finary_uapi timeseries <period> <type>
     finary_uapi checking_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
-    finary_uapi fonds_euro
+    finary_uapi fonds_euro [--org-id=<org_id>]
     finary_uapi startups
-    finary_uapi investments
+    finary_uapi investments [--org-id=<org_id>]
     finary_uapi investments dividends
     finary_uapi investments transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
     finary_uapi crowdlendings
     finary_uapi crowdlendings distribution
     finary_uapi crowdlendings add <account_name> <name> <annual_yield> <month_duration> <initial_investment> <current_price> <currency_code> <start_date>
     finary_uapi crowdlendings delete <crowdlending_id>
-    finary_uapi cryptos
+    finary_uapi cryptos [--org-id=<org_id>]
     finary_uapi cryptos distribution
     finary_uapi cryptos add <code> <quantity> <price> <account_id>
     finary_uapi cryptos update <code> <quantity> <price> <account_id>
@@ -25,7 +25,7 @@ Usage:
     finary_uapi precious_metals
     finary_uapi precious_metals add <name> <quantity> <price>
     finary_uapi precious_metals delete <commodity_id>
-    finary_uapi holdings_accounts [crypto | stocks | crowdlending | <account_name>]
+    finary_uapi holdings_accounts [crypto | stocks | crowdlending | <account_name>] [--org-id=<org_id>]
     finary_uapi holdings_accounts add (crypto | stocks | crowdlending) <account_name>
     finary_uapi holdings_accounts add (checking | saving) <account_name> <bank_name> <account_type> <balance>
     finary_uapi holdings_accounts delete <account_id>
@@ -40,18 +40,18 @@ Usage:
     finary_uapi fiat_currency search QUERY
     finary_uapi institutions search QUERY
     finary_uapi securities search QUERY
-    finary_uapi securities
+    finary_uapi securities [--org-id=<org_id>]
     finary_uapi securities add <code> <quantity> <price> <account_id>
     finary_uapi securities delete <security_id>
     finary_uapi credit_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
-    finary_uapi real_estates
+    finary_uapi real_estates [--org-id=<org_id>]
     finary_uapi real_estates add rent <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> <monthly_charges> <monthly_rent> <yearly_taxes> <rental_period> <rental_type> [<currency_code>]
     finary_uapi real_estates add <category> <address> <user_estimated_value> <description> <surface> <buying_price> <building_type> <ownership_percentage> [<currency_code>]
     finary_uapi real_estates update rent <asset_id> <user_estimated_value> <description> <buying_price> <ownership_percentage> <monthly_rent>
     finary_uapi real_estates update <category> <asset_id> <user_estimated_value> <description> <buying_price> <ownership_percentage>
     finary_uapi real_estates delete <asset_id>
     finary_uapi scpis search QUERY
-    finary_uapi scpis
+    finary_uapi scpis [--org-id=<org_id>]
     finary_uapi watches search QUERY
     finary_uapi import crowdlending_csv FILENAME [-d] [-f]
     finary_uapi import cryptocom FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
@@ -73,6 +73,7 @@ Options:
   --start-date=<start_date>         Start date for transactions (format: YYYY-MM-DD)
   --end-date=<end_date>             End date for transactions (format: YYYY-MM-DD)
   --marked=<marked>                 Filter marked transactions (true or false)
+  --org-id=<org_id>                 Organisation ID (UUID or 'family' to auto-resolve); queries org-level endpoint instead of /users/me/
 
 
 """  # noqa
@@ -142,7 +143,16 @@ from .user_cryptos import (
     update_user_crypto_by_code,
 )
 from .user_fonds_euro import get_user_fonds_euro
-from .user_me import get_user_me, get_user_me_institution_connections
+from .user_me import get_family_org_id, get_user_me, get_user_me_institution_connections
+from .user_organizations import (
+    get_organization_cryptos,
+    get_organization_fonds_euro,
+    get_organization_holdings_accounts,
+    get_organization_investments,
+    get_organization_real_estates,
+    get_organization_scpis,
+    get_organization_securities,
+)
 from .user_precious_metals import (
     add_user_precious_metals_by_name,
     delete_user_precious_metals,
@@ -170,6 +180,12 @@ def main() -> int:  # pragma: nocover
         result = signin(args["MFA_CODE"])
     else:
         session = prepare_session()
+        org_id = args["--org-id"]
+        if org_id == "family":
+            org_id = get_family_org_id(session)
+            if org_id is None:
+                print("Error: no family organisation found for this account", file=sys.stderr)
+                return 1
         if args["me"]:
             result = get_user_me(session)
         elif args["institution_connections"]:
@@ -188,7 +204,10 @@ def main() -> int:  # pragma: nocover
                     marked=args["--marked"],
                 )
         elif args["fonds_euro"]:
-            result = get_user_fonds_euro(session)
+            if org_id:
+                result = get_organization_fonds_euro(session, org_id)
+            else:
+                result = get_user_fonds_euro(session)
         elif args["startups"]:
             result = get_user_startups(session)
         elif args["search"]:
@@ -352,6 +371,8 @@ def main() -> int:  # pragma: nocover
         elif args["cryptos"]:
             if args["distribution"]:
                 result = get_portfolio_cryptos_distribution(session)
+            elif org_id:
+                result = get_organization_cryptos(session, org_id)
             else:
                 result = get_user_cryptos(session)
         elif args["investments"]:
@@ -369,6 +390,8 @@ def main() -> int:  # pragma: nocover
                     end_date=args["--end-date"],
                     marked=args["--marked"],
                 )
+            elif org_id:
+                result = get_organization_investments(session, org_id)
             else:
                 result = get_portfolio_investments(session)
         elif args["timeseries"]:
@@ -378,6 +401,8 @@ def main() -> int:  # pragma: nocover
                 result = get_holdings_account_per_name_or_id(
                     session, args["<account_name>"]
                 )
+            elif org_id:
+                result = get_organization_holdings_accounts(session, org_id)
             else:
                 holdings_account_types = ["crypto", "stocks", "crowdlending"]
                 hats = [i for i in holdings_account_types if args[i]]
@@ -390,7 +415,10 @@ def main() -> int:  # pragma: nocover
         elif args["precious_metals"]:
             result = get_user_precious_metals(session)
         elif args["securities"]:
-            result = get_user_securities(session)
+            if org_id:
+                result = get_organization_securities(session, org_id)
+            else:
+                result = get_user_securities(session)
         elif args["credit_accounts"]:
             if args["transactions"]:
                 result = get_portfolio_credit_accounts_transactions(
@@ -405,9 +433,15 @@ def main() -> int:  # pragma: nocover
                     marked=args["--marked"],
                 )
         elif args["real_estates"]:
-            result = get_user_real_estates(session)
+            if org_id:
+                result = get_organization_real_estates(session, org_id)
+            else:
+                result = get_user_real_estates(session)
         elif args["scpis"]:
-            result = get_user_scpis(session)
+            if org_id:
+                result = get_organization_scpis(session, org_id)
+            else:
+                result = get_user_scpis(session)
         elif args["import"]:
             to_be_imported = []
             if args["crowdlending_csv"]:

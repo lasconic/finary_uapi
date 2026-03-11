@@ -81,6 +81,45 @@ def test_generic_test(
         assert len(result["result"]) > 0
 
 
+def test_organizations(session: requests.Session) -> None:
+    from finary_uapi.user_me import get_family_org_id
+    from finary_uapi.user_organizations import (
+        get_organization_investments,
+        get_organization_securities,
+        get_organization_cryptos,
+        get_organization_fonds_euro,
+        get_organization_real_estates,
+        get_organization_scpis,
+        get_organization_holdings_accounts,
+    )
+
+    org_id = get_family_org_id(session)
+    if org_id is None:
+        pytest.skip("No family organisation on this account")
+
+    # portfolio-level aggregated view (result is a dict)
+    result = get_organization_investments(session, org_id)
+    assert result
+    assert result.get("message") == "OK"
+    assert result.get("error") is None
+    assert isinstance(result.get("result"), dict)
+
+    # flat-list endpoints (result is a list)
+    for fn in (
+        get_organization_securities,
+        get_organization_cryptos,
+        get_organization_fonds_euro,
+        get_organization_real_estates,
+        get_organization_scpis,
+        get_organization_holdings_accounts,
+    ):
+        result = fn(session, org_id)
+        assert result
+        assert result.get("message") == "OK"
+        assert result.get("error") is None
+        assert isinstance(result.get("result"), list)
+
+
 def test_get_security_error(session: requests.Session) -> None:
     securities = get_securities(session, "US5949181045XDE")
     assert securities

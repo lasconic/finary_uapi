@@ -32,6 +32,15 @@ def get_user_me_subscription_details(session: requests.Session) -> Any:
     return get_and_print(session, url)
 
 
+def get_family_org_id(session: requests.Session) -> str | None:
+    """Return the ID of the user's family organisation, or None."""
+    data = get_user_me_organizations(session)
+    for org in data.get("result", []):
+        if org.get("organization_type") == "family":
+            return org["id"]
+    return None
+
+
 # convenience functions
 
 
