@@ -143,7 +143,12 @@ from .user_cryptos import (
     update_user_crypto_by_code,
 )
 from .user_fonds_euro import get_user_fonds_euro
-from .user_me import get_family_org_id, get_user_me, get_user_me_institution_connections
+from .user_me import (
+    get_family_org_id,
+    get_user_me,
+    get_user_me_institution_connections,
+    get_user_me_organizations,
+)
 from .user_organizations import (
     get_organization_cryptos,
     get_organization_fonds_euro,
@@ -184,12 +189,17 @@ def main() -> int:  # pragma: nocover
         if org_id == "family":
             org_id = get_family_org_id(session)
             if org_id is None:
-                print("Error: no family organisation found for this account", file=sys.stderr)
+                print(
+                    "Error: no family organisation found for this account",
+                    file=sys.stderr,
+                )
                 return 1
         if args["me"]:
             result = get_user_me(session)
         elif args["institution_connections"]:
             result = get_user_me_institution_connections(session)
+        elif args["organizations"]:
+            result = get_user_me_organizations(session)
         elif args["checking_accounts"]:
             if args["transactions"]:
                 result = get_portfolio_checking_accounts_transactions(

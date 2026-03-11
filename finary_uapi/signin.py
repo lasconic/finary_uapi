@@ -36,7 +36,7 @@ def signin(otp_code: str = "") -> Any:
 
     session = requests.Session()
     cookie_jar_file = http.cookiejar.MozillaCookieJar(COOKIE_FILENAME)
-    session.cookies = cookie_jar_file  # type: ignore
+    session.cookies = cookie_jar_file
     headers = {
         "Accept-Encoding": "identity",
         "Origin": APP_ROOT,
