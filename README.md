@@ -11,19 +11,97 @@ If you don't already have an account, here is a referral link to sign up: https:
 
 * Provide a command line tool to do a large part of what you can do on Finary website
 * Automate some requested features not yet implemented by finary like CSV import/export
+* Expose your Finary portfolio to any LLM via a MCP (Model Context Protocol) server
 
-## Quick start 
+## Quick start
 
 1. Install requirements. `pip install finary_uapi`.
-2. Copy paste the `credentials.json.tpl` file to `credentials.json` and file your username and password.
+2. Copy paste the `credentials.json.tpl` file to `credentials.json` and fill in your username and password.
 3. Run `python -m finary_uapi signin`
 4. You are good to go and can explore the API. Run `python -m finary_uapi` for available commands.
-5. Try `python -m finary_uapi me` or `python -m finary_uapi investments`. 
+5. Try `python -m finary_uapi me` or `python -m finary_uapi investments`.
 6. If you get errors about being unauthorized, you need to signin again.
+
+## MCP Server — Query Finary from a LLM
+
+This project includes a [Model Context Protocol](https://modelcontextprotocol.io/) server (`mcp_server.py`) that exposes your Finary portfolio to any MCP-compatible LLM client (Claude Desktop, Cursor, etc.).
+
+### Setup
+
+1. Install the `mcp` dependency:
+
+```bash
+poetry add mcp
+# or
+pip install mcp
+```
+
+2. Make sure `credentials.json` exists at the root of the project (same as the CLI quick start above).
+
+3. Sign in once to generate the session files (`jwt.json`, `cookies.txt`):
+
+```bash
+python -m finary_uapi signin
+# With MFA:
+python -m finary_uapi signin YOUR_MFA_CODE
+```
+
+4. Configure Claude Desktop by editing its config file:
+   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+   - **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "finary": {
+      "command": "C:\\absolute\\path\\to\\python.exe",
+      "args": ["C:\\absolute\\path\\to\\finary_uapi\\mcp_server.py"]
+    }
+  }
+}
+```
+
+> To find your Poetry virtualenv Python executable: `poetry env info --executable`
+
+5. Restart Claude Desktop. The Finary tools will appear in the available connectors.
+
+### Available MCP tools
+
+| Tool | Description |
+|---|---|
+| `finary_me` | Logged-in user information |
+| `finary_portfolio` | Full portfolio view by asset class |
+| `finary_portfolio_distribution` | Allocation breakdown in % |
+| `finary_portfolio_timeseries` | Portfolio value history over a period |
+| `finary_investments` | Stocks, ETFs and funds |
+| `finary_investments_dividends` | Dividends received |
+| `finary_investments_transactions` | Investment transaction history |
+| `finary_cryptos` | Crypto holdings with P&L |
+| `finary_cryptos_distribution` | Crypto breakdown by currency |
+| `finary_precious_metals` | Gold, silver and other metals |
+| `finary_real_estates` | Real estate with valuation and yield |
+| `finary_crowdlendings` | Crowdlending investments with rate and duration |
+| `finary_crowdlendings_distribution` | Crowdlending breakdown by platform |
+| `finary_fonds_euro` | Euro funds (life insurance) |
+| `finary_startups` | Unlisted equity / startup investments |
+| `finary_scpis` | SCPIs with yield |
+| `finary_generic_assets` | Generic assets (art, car, valuables…) |
+| `finary_checking_accounts_transactions` | Checking account transactions |
+
+### Example questions to ask Claude
+
+Once the server is running, you can ask questions like:
+
+* *"What is the total value of my portfolio?"*
+* *"Show me my crypto holdings and their performance."*
+* *"How is my wealth allocated across asset classes?"*
+* *"What are my crowdlending investments and their yield?"*
+* *"Compare the performance of my ETFs vs my cryptos this month."*
 
 ## Usage
 
-Run ``python -m finary_uapi` for an up to date version.
+Run `python -m finary_uapi` for an up to date version.
 
 ```
 Usage:
@@ -92,38 +170,44 @@ Usage:
 ## Examples
 
 * List crypto accounts, and display id and name
+
 ```
 python -m finary_uapi holdings_accounts crypto | jq '.result[] | {id: .id, name: .name}'
 ```
 
 * List investment accounts, and display id and name
+
 ```
 python -m finary_uapi holdings_accounts stocks | jq '.result[] | {id: .id, name: .name}'
 ```
 
 * Import a CSV file from crypto.com in a new crypto account on Finary. Replace the filename and the account name
+
 ```
 python -m finary_uapi import cryptocom crypto_transactions_record.csv --new Crypto.com
 ```
 
-* Import a generic CSV file (see tests directory for a sample) in a new crypto account on Finary. 
-Replace the filename and the account name.
+* Import a generic CSV file (see tests directory for a sample) in a new crypto account on Finary.
+  Replace the filename and the account name.
+
 ```
 python -m finary_uapi import crypto_csv cryptodump.csv --new MyLovelyExchange
 ```
 
 * Create a "Compte d'épargne' with a 1000€ balance at BNP Paribas
+
 ```
 python -m finary_uapi holdings_accounts add checking testchecking "BNP Paribas" "Compte d'épargne" 1000
 ```
 
 * Print gross wealth
+
 ```
 python -m finary_uapi dashboard gross all | jq '.result["total"]["amount"]'
 ```
 
-
 ## TODO
+
 * See [Issues](https://github.com/lasconic/finary/issues)
 * Tests :smile:
 * More typing hints
@@ -131,11 +215,11 @@ python -m finary_uapi dashboard gross all | jq '.result["total"]["amount"]'
 * Write, update, delete for Loans, Real estates, SCPIs are entirely TODO
 * Precious metal update
 * Interactive command line (it would make automation less fun, but manual use easier)
+* MCP write tools (add, update, delete) with confirmation step
 
 ### Remarks for finary devs
+
 * Delete responses should be normalized, sometimes we get json back sometimes nothing but the 204 HTTP code.
-
-
 
 ## Contributors ✨
 
@@ -165,6 +249,5 @@ Thanks go to these people ([emoji key](https://allcontributors.org/docs/en/emoji
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
