@@ -32,6 +32,13 @@ try:
     from finary_uapi.auth import prepare_session
     import finary_uapi.user_portfolio as portfolio
     import finary_uapi.user_me as user_me
+    import finary_uapi.user_real_estates as user_real_estates
+    import finary_uapi.user_scpis as user_scpis
+    import finary_uapi.user_generic_assets as user_generic_assets
+    import finary_uapi.user_fonds_euro as user_fonds_euro
+    import finary_uapi.user_startups as user_startups
+    import finary_uapi.user_precious_metals as user_precious_metals
+    import finary_uapi.user_crowdlendings as user_crowdlendings
 except ImportError as e:
     print(f"[ERREUR] Import finary_uapi échoué : {e}", file=sys.stderr)
     sys.exit(1)
@@ -198,6 +205,16 @@ TOOLS = [
         description="Informations sur le compte utilisateur Finary connecté.",
         inputSchema={"type": "object", "properties": {}},
     ),
+    types.Tool(
+        name="finary_wealth_summary",
+        description=(
+            "Retourne la valeur totale du patrimoine Finary agrégée par catégorie : "
+            "Immobilier (SCPI + biens physiques), Actions & Fonds, Crypto, Fonds euros, "
+            "Startups & PME, Crowdlending, Métaux précieux, Comptes bancaires, Autres. "
+            "Utiliser cet outil pour répondre à toute question sur la valeur totale du patrimoine."
+        ),
+        inputSchema={"type": "object", "properties": {}},
+    ),
 ]
 
 
@@ -218,6 +235,66 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
         logger.exception(f"Erreur inattendue — outil : {name}")
         return [types.TextContent(type="text", text=f"[ERREUR INATTENDUE] {e}")]
 
+
+
+def _get_category_total(data: Any) -> float:
+    """Extrait la valeur totale depuis une réponse finary_uapi."""
+    try:
+        result = data.get("result", data)
+        if isinstance(result, list):
+            return sum(
+                item.get("current_value", item.get("amount", item.get("value", 0)))
+                for item in result
+            )
+        if isinstance(result, dict):
+            # Cherche un champ "total" ou "amount" ou "current_value"
+            for key in ("total", "amount", "current_value", "value"):
+                if key in result:
+                    val = result[key]
+                    if isinstance(val, dict):
+                        return val.get("amount", 0)
+                    return float(val) if val else 0
+    except Exception:
+        pass
+    return 0
+
+
+def _wealth_summary(session) -> dict:
+    """Appelle chaque catégorie et agrège les totaux."""
+    def safe(fn, *args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            logger.warning(f"Erreur lors de la récupération ({fn.__name__}): {e}")
+            return {}
+
+    categories = {
+        "Immobilier — Biens physiques": safe(user_real_estates.get_user_real_estates, session),
+        "Immobilier — SCPI":            safe(user_scpis.get_user_scpis, session),
+        "Actions & Fonds":              safe(portfolio.get_portfolio_investments, session),
+        "Crypto":                       safe(portfolio.get_portfolio_cryptos, session),
+        "Fonds euros":                  safe(user_fonds_euro.get_user_fonds_euro, session),
+        "Startups & PME":               safe(user_startups.get_user_startups, session),
+        "Crowdlending":                 safe(user_crowdlendings.get_user_crowdlendings, session),
+        "Métaux précieux":              safe(user_precious_metals.get_user_precious_metals, session),
+        "Autres (actifs génériques)":   safe(user_generic_assets.get_user_generic_assets, session),
+    }
+
+    summary = {}
+    grand_total = 0.0
+
+    for label, data in categories.items():
+        total = _get_category_total(data)
+        summary[label] = {
+            "total_eur": round(total, 2),
+            "raw": data,
+        }
+        grand_total += total
+
+    return {
+        "patrimoine_total_eur": round(grand_total, 2),
+        "categories": summary,
+    }
 
 def _dispatch(session, name: str, args: dict) -> Any:
     """Appelle la fonction finary_uapi correspondante au nom de l'outil MCP."""
@@ -250,28 +327,28 @@ def _dispatch(session, name: str, args: dict) -> Any:
         return portfolio.get_portfolio_cryptos_distribution(session)
 
     elif name == "finary_precious_metals":
-        return portfolio.get_portfolio(session, "precious_metals")
+        return user_precious_metals.get_user_precious_metals(session)
 
     elif name == "finary_real_estates":
-        return portfolio.get_portfolio(session, "real_estates")
+        return user_real_estates.get_user_real_estates(session)
 
     elif name == "finary_crowdlendings":
-        return portfolio.get_portfolio_crowdlendings(session)
+        return user_crowdlendings.get_user_crowdlendings(session)
 
     elif name == "finary_crowdlendings_distribution":
-        return portfolio.get_portfolio_crowdlendings_distribution(session)
+        return user_crowdlendings.get_user_crowdlendings(session)
 
     elif name == "finary_fonds_euro":
-        return portfolio.get_portfolio(session, "fonds_euro")
+        return user_fonds_euro.get_user_fonds_euro(session)
 
     elif name == "finary_startups":
-        return portfolio.get_portfolio(session, "startups")
+        return user_startups.get_user_startups(session)
 
     elif name == "finary_scpis":
-        return portfolio.get_portfolio(session, "scpis")
+        return user_scpis.get_user_scpis(session)
 
     elif name == "finary_generic_assets":
-        return portfolio.get_portfolio(session, "generic_assets")
+        return user_generic_assets.get_user_generic_assets(session)
 
     elif name == "finary_checking_accounts_transactions":
         return portfolio.get_portfolio_checking_accounts_transactions(
@@ -280,6 +357,9 @@ def _dispatch(session, name: str, args: dict) -> Any:
 
     elif name == "finary_me":
         return user_me.get_user_me(session)
+
+    elif name == "finary_wealth_summary":
+        return _wealth_summary(session)
 
     else:
         raise ValueError(f"Outil inconnu : {name}")
