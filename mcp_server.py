@@ -237,64 +237,148 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
 
 
 
-def _get_category_total(data: Any) -> float:
-    """Extrait la valeur totale depuis une réponse finary_uapi."""
+# ── Extracteurs légers (réduisent la taille des réponses) ─────────────────────
+
+def _extract_amount(val: Any) -> float:
+    """Normalise une valeur pouvant être float, int ou dict{amount:...}."""
+    if isinstance(val, dict):
+        return float(val.get("amount", val.get("value", 0)) or 0)
+    return float(val or 0)
+
+
+def _slim_list(items: list, fields: list) -> list:
+    """Ne conserve que les champs utiles d'une liste d'actifs."""
+    result = []
+    for item in items:
+        row = {k: item[k] for k in fields if k in item}
+        result.append(row)
+    return result
+
+
+def _slim_response(data: Any, fields: list) -> dict:
+    """
+    Extrait les items d'une réponse et ne garde que les champs demandés.
+    Gère deux structures de réponse Finary :
+      - {result: {total: {amount: X}, accounts: [...]}}  (investments, cryptos)
+      - {result: [...]}                                   (real_estates, scpis, etc.)
+    """
+    if not data:
+        return {"items": [], "total_eur": 0.0}
+
+    result = data.get("result", data)
+
+    # Structure avec total + accounts (investments, cryptos)
+    if isinstance(result, dict) and "total" in result:
+        total = _extract_amount(result["total"].get("amount", 0))
+        items = result.get("accounts", [])
+        slim = _slim_list(items, fields)
+        return {"total_eur": round(total, 2), "items": slim}
+
+    # Structure liste plate (real_estates, scpis, crowdlendings, etc.)
+    if not isinstance(result, list):
+        result = [result] if result else []
+    slim = _slim_list(result, fields)
+    total = sum(
+        _extract_amount(i.get("current_value", i.get("balance", i.get("amount", i.get("value", 0)))))
+        for i in result
+    )
+    return {"total_eur": round(total, 2), "items": slim}
+
+
+def _slim_cryptos(data: Any) -> dict:
+    """
+    Extrait les tokens individuels depuis result.accounts[].cryptos[].
+    Retourne un dict avec le total global et la liste à plat de tous les tokens.
+    """
+    if not data:
+        return {"total_eur": 0.0, "tokens": []}
+
+    result = data.get("result", {})
+    total = _extract_amount(result.get("total", {}).get("amount", 0))
+    accounts = result.get("accounts", [])
+
+    tokens = []
+    for account in accounts:
+        account_name = account.get("name", "")
+        for token in account.get("cryptos", []):
+            tokens.append({
+                "account":              account_name,
+                "name":                 token.get("crypto", {}).get("name", ""),
+                "code":                 token.get("crypto", {}).get("code", ""),
+                "quantity":             token.get("quantity"),
+                "current_value_eur":    round(_extract_amount(token.get("display_current_value", token.get("current_value", 0))), 4),
+                "buying_value_eur":     round(_extract_amount(token.get("display_buying_value",  token.get("buying_value",  0))), 4),
+                "unrealized_pnl_eur":   round(_extract_amount(token.get("display_unrealized_pnl", token.get("unrealized_pnl", 0))), 4),
+                "unrealized_pnl_pct":   round(token.get("unrealized_pnl_percent", 0) or 0, 2),
+                "current_price_eur":    round(_extract_amount(token.get("display_current_price",  token.get("current_price",  0))), 4),
+            })
+
+    # Trier par valeur décroissante
+    tokens.sort(key=lambda t: t["current_value_eur"], reverse=True)
+
+    return {"total_eur": round(total, 2), "tokens": tokens}
+
+
+# Champs conservés par catégorie — uniquement ce dont le LLM a besoin
+FIELDS = {
+    "investments":    ["name", "balance", "display_balance", "buying_value", "unrealized_pnl", "upnl_difference"],
+    "cryptos":        ["name", "code", "quantity", "current_value", "display_current_value", "buying_value", "unrealized_pnl", "unrealized_pnl_percent", "current_price"],
+    "real_estates":   ["name", "address", "current_value", "buying_price", "monthly_rent", "gross_yield"],
+    "scpis":          ["name", "current_value", "buying_price", "distribution_rate"],
+    "fonds_euro":     ["name", "current_value", "annual_yield"],
+    "startups":       ["name", "current_value", "buying_price"],
+    "crowdlendings":  ["name", "current_value", "annual_yield", "month_duration", "start_date"],
+    "precious_metals":["name", "quantity", "current_value", "buying_price"],
+    "generic_assets": ["name", "category", "quantity", "current_value", "buying_price"],
+    "checking":       ["name", "balance", "bank_account_type"],
+}
+
+
+def _safe_call(fn, *args, **kwargs):
     try:
-        result = data.get("result", data)
-        if isinstance(result, list):
-            return sum(
-                item.get("current_value", item.get("amount", item.get("value", 0)))
-                for item in result
-            )
-        if isinstance(result, dict):
-            # Cherche un champ "total" ou "amount" ou "current_value"
-            for key in ("total", "amount", "current_value", "value"):
-                if key in result:
-                    val = result[key]
-                    if isinstance(val, dict):
-                        return val.get("amount", 0)
-                    return float(val) if val else 0
-    except Exception:
-        pass
-    return 0
+        return fn(*args, **kwargs)
+    except Exception as e:
+        logger.warning(f"Erreur ({fn.__name__}): {e}")
+        return {}
 
 
 def _wealth_summary(session) -> dict:
-    """Appelle chaque catégorie et agrège les totaux."""
-    def safe(fn, *args, **kwargs):
-        try:
-            return fn(*args, **kwargs)
-        except Exception as e:
-            logger.warning(f"Erreur lors de la récupération ({fn.__name__}): {e}")
-            return {}
-
-    categories = {
-        "Immobilier — Biens physiques": safe(user_real_estates.get_user_real_estates, session),
-        "Immobilier — SCPI":            safe(user_scpis.get_user_scpis, session),
-        "Actions & Fonds":              safe(portfolio.get_portfolio_investments, session),
-        "Crypto":                       safe(portfolio.get_portfolio_cryptos, session),
-        "Fonds euros":                  safe(user_fonds_euro.get_user_fonds_euro, session),
-        "Startups & PME":               safe(user_startups.get_user_startups, session),
-        "Crowdlending":                 safe(user_crowdlendings.get_user_crowdlendings, session),
-        "Métaux précieux":              safe(user_precious_metals.get_user_precious_metals, session),
-        "Autres (actifs génériques)":   safe(user_generic_assets.get_user_generic_assets, session),
+    """
+    Agrège le patrimoine par catégorie en n'exposant que les champs essentiels.
+    Retourne un résumé compact optimisé pour le contexte LLM.
+    """
+    raw = {
+        "Immobilier — Biens physiques": (_safe_call(user_real_estates.get_user_real_estates, session), "real_estates"),
+        "Immobilier — SCPI":            (_safe_call(user_scpis.get_user_scpis, session),              "scpis"),
+        "Actions & Fonds":              (_safe_call(portfolio.get_portfolio_investments, session),     "investments"),
+        "Crypto":                       (_safe_call(portfolio.get_portfolio_cryptos, session),         "__cryptos__"),
+        "Fonds euros":                  (_safe_call(user_fonds_euro.get_user_fonds_euro, session),     "fonds_euro"),
+        "Startups & PME":               (_safe_call(user_startups.get_user_startups, session),         "startups"),
+        "Crowdlending":                 (_safe_call(user_crowdlendings.get_user_crowdlendings, session),"crowdlendings"),
+        "Métaux précieux":              (_safe_call(user_precious_metals.get_user_precious_metals, session), "precious_metals"),
+        "Autres (actifs génériques)":   (_safe_call(user_generic_assets.get_user_generic_assets, session),  "generic_assets"),
     }
 
     summary = {}
     grand_total = 0.0
 
-    for label, data in categories.items():
-        total = _get_category_total(data)
-        summary[label] = {
-            "total_eur": round(total, 2),
-            "raw": data,
-        }
-        grand_total += total
+    for label, (data, kind) in raw.items():
+        if kind == "__cryptos__":
+            slim = _slim_cryptos(data)
+        else:
+            slim = _slim_response(data, FIELDS[kind])
+        summary[label] = slim
+        grand_total += slim["total_eur"]
 
     return {
         "patrimoine_total_eur": round(grand_total, 2),
         "categories": summary,
     }
+
+
+def _slim_dispatch(data: Any, kind: str) -> Any:
+    """Allège la réponse d'un outil individuel."""
+    return _slim_response(data, FIELDS.get(kind, []))
 
 def _dispatch(session, name: str, args: dict) -> Any:
     """Appelle la fonction finary_uapi correspondante au nom de l'outil MCP."""
@@ -310,7 +394,7 @@ def _dispatch(session, name: str, args: dict) -> Any:
         return portfolio.get_portfolio_timeseries(session, args.get("period", "1m"))
 
     elif name == "finary_investments":
-        return portfolio.get_portfolio_investments(session)
+        return _slim_dispatch(portfolio.get_portfolio_investments(session), "investments")
 
     elif name == "finary_investments_dividends":
         return portfolio.get_portfolio_investments_dividends(session)
@@ -321,34 +405,34 @@ def _dispatch(session, name: str, args: dict) -> Any:
         )
 
     elif name == "finary_cryptos":
-        return portfolio.get_portfolio_cryptos(session)
+        return _slim_cryptos(portfolio.get_portfolio_cryptos(session))
 
     elif name == "finary_cryptos_distribution":
         return portfolio.get_portfolio_cryptos_distribution(session)
 
     elif name == "finary_precious_metals":
-        return user_precious_metals.get_user_precious_metals(session)
+        return _slim_dispatch(user_precious_metals.get_user_precious_metals(session), "precious_metals")
 
     elif name == "finary_real_estates":
-        return user_real_estates.get_user_real_estates(session)
+        return _slim_dispatch(user_real_estates.get_user_real_estates(session), "real_estates")
 
     elif name == "finary_crowdlendings":
-        return user_crowdlendings.get_user_crowdlendings(session)
+        return _slim_dispatch(user_crowdlendings.get_user_crowdlendings(session), "crowdlendings")
 
     elif name == "finary_crowdlendings_distribution":
         return user_crowdlendings.get_user_crowdlendings(session)
 
     elif name == "finary_fonds_euro":
-        return user_fonds_euro.get_user_fonds_euro(session)
+        return _slim_dispatch(user_fonds_euro.get_user_fonds_euro(session), "fonds_euro")
 
     elif name == "finary_startups":
-        return user_startups.get_user_startups(session)
+        return _slim_dispatch(user_startups.get_user_startups(session), "startups")
 
     elif name == "finary_scpis":
-        return user_scpis.get_user_scpis(session)
+        return _slim_dispatch(user_scpis.get_user_scpis(session), "scpis")
 
     elif name == "finary_generic_assets":
-        return user_generic_assets.get_user_generic_assets(session)
+        return _slim_dispatch(user_generic_assets.get_user_generic_assets(session), "generic_assets")
 
     elif name == "finary_checking_accounts_transactions":
         return portfolio.get_portfolio_checking_accounts_transactions(
