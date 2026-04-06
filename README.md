@@ -104,7 +104,7 @@ Auth works exactly like the CLI. Call `sign_in` first (or reuse an existing
 
 ```
 Usage:
-    finary_uapi signin [MFA_CODE] [--jwt-token=<jwt_token>]
+    finary_uapi signin [MFA_CODE]
     finary_uapi me
     finary_uapi institution_connections
     finary_uapi organizations
