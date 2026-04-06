@@ -12,6 +12,10 @@ python = "^3.10"
 docopt = "^0.6.2"
 fuzzywuzzy = {version = "^0.18.0"}
 curl-cffi = ">=0.13,<0.15"
+mcp = "^1.18.0"
+
+[tool.poetry.scripts]
+finary-uapi-mcp = "finary_uapi.mcp_server:main"
 
 [tool.poetry.group.dev.dependencies]
 black = "26.3.0"
