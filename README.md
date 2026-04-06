@@ -25,6 +25,83 @@ If you don't already have an account, here is a referral link to sign up: https:
 
 Run ``python -m finary_uapi` for an up to date version.
 
+## MCP server
+
+This project also ships a Model Context Protocol (MCP) server so MCP clients can
+call Finary tools over stdio.
+
+### Start the server
+
+```bash
+python -m finary_uapi.mcp_server
+```
+
+Or via the script entrypoint:
+
+```bash
+finary-uapi-mcp
+```
+
+### Claude Desktop configuration
+
+Add the server to your Claude Desktop MCP config file:
+`~/Library/Application Support/Claude/claude_desktop_config.json`
+
+Using Poetry:
+
+```json
+{
+  "mcpServers": {
+    "finary-uapi": {
+      "command": "PATH_TO_POETRY_BINARY",
+      "args": [
+        "--directory",
+        "PATH_TO_PROJECT",
+        "run",
+        "python",
+        "-m",
+        "finary_uapi.mcp_server"
+      ],
+      "env": {
+        "PATH": "PATH_TO_POETRY_BINARY_DIR"
+      }
+    }
+  }
+}
+```
+
+If Claude Desktop cannot find `poetry`, always use its absolute path in
+`command`. If Claude starts processes from `/`, using `--directory` in args is
+more reliable than relying on `cwd`.
+
+Using installed script (pip/poetry script):
+
+```json
+{
+  "mcpServers": {
+    "finary-uapi": {
+      "command": "finary-uapi-mcp"
+    }
+  }
+}
+```
+
+Then restart Claude Desktop. In Claude, call `sign_in` first to create/reuse
+`jwt.json`, then use the other tools.
+
+### Available tools
+
+The MCP server exposes the most used read/search actions from the CLI:
+`sign_in`, `me`, `institution_connections`, `organizations`, `holdings_accounts`,
+`fonds_euro`, `startups`, `investments`, `investments_dividends`,
+`investments_transactions`, `checking_accounts_transactions`,
+`credit_accounts_transactions`, `crowdlendings`, `crowdlendings_distribution`,
+`cryptos`, `securities`, `real_estates`, `scpis`, `timeseries`, `search`,
+`generic_asset_categories`, `crypto_chains`.
+
+Auth works exactly like the CLI. Call `sign_in` first (or reuse an existing
+`jwt.json`), then call the other tools.
+
 ```
 Usage:
     finary_uapi signin [MFA_CODE]
