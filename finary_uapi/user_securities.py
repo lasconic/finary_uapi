@@ -156,8 +156,9 @@ def add_imported_securities_to_account(
                     found = True
                     break
             if not found:
-                if dry_run:
-                    logging.info(f'-- Delete {account_security["security"]["name"]}')
+                logging.info(f'-- Delete {account_security["security"]["name"]}')
+                if not dry_run:                 
+                    delete_user_security(session, account_security["id"])
 
     for line in to_be_imported:
         # search by ISIN in the account
@@ -181,11 +182,11 @@ def add_imported_securities_to_account(
                             line["quantity"] != account_security["quantity"]
                             or line["price"] != account_security["display_buying_price"]
                         ):
-                            if dry_run:
-                                logging.info(
-                                    f'** Update [{security["name"]}]: {account_security["quantity"]} -> {line["quantity"]} - [{account_security["display_buying_price"]} -> {line["price"]}]'  # noqa
-                                )
-                            else:
+                            
+                            logging.info(
+                                f'** Update [{security["name"]}]: {account_security["quantity"]} -> {line["quantity"]} - [{account_security["display_buying_price"]} -> {line["price"]}]'  # noqa
+                            )
+                            if not dry_run:
                                 update_user_security(
                                     session,
                                     account_security,
@@ -196,11 +197,10 @@ def add_imported_securities_to_account(
                         found = True
                         break
                 if not found:
-                    if dry_run:
-                        logging.info(
-                            f'++ Add [{security["symbol"]}]: {line["quantity"]} - {line["price"]}'  # noqa
-                        )
-                    else:
+                    logging.info(
+                        f'++ Add [{security["symbol"]}]: {line["quantity"]} - {line["price"]}'  # noqa
+                    )
+                    if not dry_run:
                         add_user_security(
                             session,
                             account["id"],
@@ -209,11 +209,10 @@ def add_imported_securities_to_account(
                             line["price"],
                         )
             else:
-                if dry_run:
-                    logging.info(
-                        f'+ Add [{security["symbol"]}]: {line["quantity"]} - {line["price"]}'
-                    )
-                else:
+                logging.info(
+                    f'+ Add [{security["symbol"]}]: {line["quantity"]} - {line["price"]}'
+                )
+                if not dry_run:
                     add_user_security(
                         session,
                         account["id"],
