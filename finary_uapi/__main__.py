@@ -8,6 +8,9 @@ Usage:
     finary_uapi timeseries <period> <type>
     finary_uapi checking_accounts transactions [--page=<page>] [--perpage=<perpage>] [--account=<account_ids>] [--institution=<institution_ids>] [--query=<query>] [--start-date=<start_date>] [--end-date=<end_date>] [--marked=<marked>]
     finary_uapi fonds_euro [--org-id=<org_id>]
+    finary_uapi fonds_euro add <fond_name> <amount> <account_name>
+    finary_uapi fonds_euro update <fond_id> <amount>
+    finary_uapi fonds_euro delete <fond_id>
     finary_uapi startups
     finary_uapi investments [--org-id=<org_id>]
     finary_uapi investments dividends
@@ -59,6 +62,7 @@ Usage:
     finary_uapi import crypto_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)]
     finary_uapi import stocks_csv FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
     finary_uapi import stocks_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
+    finary_uapi import fonds_euro_json FILENAME [(--new=NAME | --edit=account_id | --add=account_id)] [-d]
 
 
 Options:
@@ -142,7 +146,13 @@ from .user_cryptos import (
     get_user_cryptos,
     update_user_crypto_by_code,
 )
-from .user_fonds_euro import get_user_fonds_euro
+from .user_fonds_euro import (
+    add_imported_fonds_euro_to_account,
+    add_user_fonds_euro,
+    delete_user_fonds_euro,
+    get_user_fonds_euro,
+    update_user_fonds_euro,
+)
 from .user_me import (
     get_family_org_id,
     get_user_me,
@@ -213,11 +223,6 @@ def main() -> int:  # pragma: nocover
                     end_date=args["--end-date"],
                     marked=args["--marked"],
                 )
-        elif args["fonds_euro"]:
-            if org_id:
-                result = get_organization_fonds_euro(session, org_id)
-            else:
-                result = get_user_fonds_euro(session)
         elif args["startups"]:
             result = get_user_startups(session)
         elif args["search"]:
@@ -258,6 +263,20 @@ def main() -> int:  # pragma: nocover
                     args["<quantity>"],
                     args["<price>"],
                     args["<account_id>"],
+                )
+            elif args["fonds_euro"]:
+                account = get_holdings_account_per_name_or_id(session, args["<account_name>"])
+                if not account:
+                    print(
+                        "Error: no account by that name",
+                        file=sys.stderr,
+                    )
+                    return 1
+                result = add_user_fonds_euro(
+                    session,
+                    account["bank"],
+                    args["<fond_name>"],
+                    args["<amount>"],
                 )
             elif args["generic_assets"]:
                 result = add_user_generic_asset(
@@ -324,6 +343,12 @@ def main() -> int:  # pragma: nocover
                     args["<price>"],
                     args["<account_id>"],
                 )
+            elif args["fonds_euro"]:
+                result = update_user_fonds_euro(
+                    session,
+                    { 'id': args["<fond_id>"] },
+                    args["<amount>"],
+                )
             elif args["generic_assets"]:
                 result = update_user_generic_asset(
                     session,
@@ -365,6 +390,8 @@ def main() -> int:  # pragma: nocover
                 delete_user_generic_asset(session, args["<asset_id>"])
             elif args["real_estates"]:
                 delete_user_real_estates(session, args["<asset_id>"])
+            elif args["fonds_euro"]:
+                result = delete_user_fonds_euro(session, args["<fond_id>"])
             elif args["holdings_accounts"]:
                 result = delete_holdings_account(session, args["<account_id>"])
             elif args["precious_metals"]:
@@ -385,6 +412,11 @@ def main() -> int:  # pragma: nocover
                 result = get_organization_cryptos(session, org_id)
             else:
                 result = get_user_cryptos(session)
+        elif args["fonds_euro"]:
+            if org_id:
+                result = get_organization_fonds_euro(session, org_id)
+            else:
+                result = get_user_fonds_euro(session)
         elif args["investments"]:
             if args["dividends"]:
                 result = get_portfolio_investments_dividends(session)
@@ -466,7 +498,7 @@ def main() -> int:  # pragma: nocover
                 to_be_imported = import_crypto_generic_csv(args["FILENAME"])
             elif args["stocks_csv"]:
                 to_be_imported = import_stocks_generic_csv(args["FILENAME"])
-            elif args["stocks_json"]:
+            elif args["stocks_json"] or args["fonds_euro_json"]:
                 with open(args["FILENAME"], "r") as input_file:
                     to_be_imported = json.loads(input_file.read())
 
@@ -518,6 +550,23 @@ def main() -> int:  # pragma: nocover
                         )
                     elif args["--add"]:
                         add_imported_securities_to_account(
+                            session, args["--add"], to_be_imported, dry_run=args["-d"]
+                        )
+                elif args["fonds_euro_json"]:  # fonds_euro import
+                    if args["--new"]:
+                        add_imported_fonds_euro_to_account(
+                            session, args["--new"], to_be_imported, dry_run=args["-d"]
+                        )
+                    elif args["--edit"]:
+                        add_imported_fonds_euro_to_account(
+                            session,
+                            args["--edit"],
+                            to_be_imported,
+                            edit=True,
+                            dry_run=args["-d"],
+                        )
+                    elif args["--add"]:
+                        add_imported_fonds_euro_to_account(
                             session, args["--add"], to_be_imported, dry_run=args["-d"]
                         )
                 else:  # crowdlending
