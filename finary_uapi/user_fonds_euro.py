@@ -15,7 +15,6 @@ def get_user_fonds_euro(session: requests.Session):
 
 def add_user_fonds_euro(session: requests.Session, bank, name, buying_price):
     url = f"{API_ROOT}/users/me/fonds_euro"
-    print(url)
     data = {}
     #data["annual_yield"] = annual_yield
     data["bank"] = bank
@@ -23,7 +22,6 @@ def add_user_fonds_euro(session: requests.Session, bank, name, buying_price):
     data["buying_price"] = buying_price
     data["name"] = name
     data_json = json.dumps(data)
-    print(data_json)
     headers = {}
     headers["Content-Length"] = str(len(data_json))
     headers["Content-Type"] = "application/json"
